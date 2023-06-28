@@ -6,7 +6,7 @@ import Titulo from "./components/titulo";
 import { FaCloudUploadAlt } from "react-icons/fa";
 
 function App() {
-  const [state, setState] = useState(3);
+  const [state, setState] = useState(9);
   // nueva true, renovacion false
   const [ nueva, setNueva] = useState(true);
 
@@ -16,7 +16,7 @@ function App() {
    const [ paterno, setPaterno] = useState("");
    const [ materno,setMaterno] = useState("");
   // //2-5
-   const [ sexo, setSexo] = useState(true);
+   const [ sexo, setSexo] = useState(Boolean);
 
    //0=soltero, 1=casado, 2=divorciado, 3=viudo, 4=union libre
    const [ estadoCivil, setEstadoCivil] = useState(0);
@@ -25,6 +25,11 @@ function App() {
    const [ otraNacion, setOtraNacion] = useState(Boolean);
    const [ otraNacionalidad, setOtraNacionalidad] = useState("");
 
+   const [ viajaSolo, setViajaSolo ] = useState(Boolean);
+   const [ acompanantes, setAcompanantes ] = useState("");
+   const [ visaAnterior, setVisaAnterior ] = useState(Boolean);
+   const [ tieneParientes, setTieneParientes ] = useState(Boolean);
+   const [ esEstudiante, setEsEstudiante ] = useState(Boolean);
  useEffect(() => {
 console.log("paterno", paterno);
 
@@ -59,17 +64,6 @@ console.log("paterno", paterno);
     )
   }
 
-  // const FormInput=(props)=>{
-  //   let {titulo, input, ayuda} =props;
-  //   <Stack >
-  //     <FormControl>
-  //         <FormControl.Label>{titulo}</FormControl.Label>
-  //           <Input />
-  //     </FormControl>
-  //     <Text> hola</Text>
-  //   </Stack>
-
-  // }
   
   const handleFirst= (state, value)=>{
     setNueva(value);
@@ -77,172 +71,6 @@ console.log("paterno", paterno);
 
   }
 
-
-
-const SwitchRender = ()=>{
-  switch (state) {
-
-
-
-      case 5:
-        return(
-          <View mx={"10%"}>
-            <FormControl>
-                <FormControl.Label>DIRECCIÓN COMPLETA</FormControl.Label>
-               
-              </FormControl>
-              <FormControl>
-                <FormControl.Label>CALLE</FormControl.Label>
-                <Input />
-              </FormControl>
-
-              <FormControl>
-                <FormControl.Label>NÚMERO</FormControl.Label>
-                <Input />
-              </FormControl>
-
-              <FormControl>
-                <FormControl.Label>COLONIA</FormControl.Label>
-                <Input />
-              </FormControl>
-              <FormControl>
-                <FormControl.Label>CÓDIGO POSTAL</FormControl.Label>
-                <Input />
-              </FormControl>
-              <FormControl>
-                <FormControl.Label>ESTADO</FormControl.Label>
-                <Input />
-              </FormControl>
-
-              <FormControl>
-                <FormControl.Label>CIUDAD</FormControl.Label>
-                <Input />
-              </FormControl>
-
-              <Divider/>
-
-              
-              <FooterBotons/>
-          </View>
-        );
-
-        case 6:
-          return(
-            <Stack mx={"10%"} space={4}>
-              <FormControl>
-                <FormControl.Label>TELEFONOS DE CASA, CELULAR Y TRABAJO</FormControl.Label>
-                <Text>CASA:</Text>
-                <Input />
-                <Text>CELULAR:</Text>
-                <Input />
-                <Text>TRABAJO:</Text>
-                <Input />
-              </FormControl>
-
-              <FormControl>
-                <FormControl.Label>CORREO ELECTRÓNICO:</FormControl.Label>
-                <Input />
-              </FormControl>
-              <FormControl>
-                <FormControl.Label>¿TIENES REDES SOCIALES?</FormControl.Label>
-                <Input />
-              </FormControl>
-
-              <FormControl>
-                <FormControl.Label>-¿COMO APARECES EN FACEBOOK? </FormControl.Label>
-                <Input />
-              </FormControl>
-
-              <FormControl>
-                <FormControl.Label>¿COMO APARECES EN INSTAGRAM? </FormControl.Label>
-                <Input />
-              </FormControl>
-
-              
-              <FooterBotons/>
-            </Stack>
-          )
-  
-
-          case 7:
-            return(
-              <Stack mx={"10%"}>
-                <FormControl bg={"#"} >
-                <FormControl.Label>DOMICILIO DONDE SE HOSPEDARÁ EN USA:</FormControl.Label>
-                <Input />
-              </FormControl>
-
-              <FormControl bg={"#"}>
-                <FormControl.Label>NOMBRE DE SUS PADRES COMPLETO Y FECHAS DE NACIMIENTO:</FormControl.Label>
-                <Input />
-              </FormControl>
-
-
-
-              <FormControl bg={"#"}>
-                <FormControl.Label>TIENE ALGUN PARIENTE DIRECTO COMO HIJOS O HERMANOS VIVIENDO EN USA?</FormControl.Label>
-                <Input />
-              </FormControl>
-
-
-
-              
-              <FooterBotons/>
-              </Stack>
-            )
-
-        case 8:
-          return(
-            <Stack mx={"10%"}>
-              <FormControl bg={"#"}>
-                <FormControl.Label>Trabajo actual:</FormControl.Label>
-                <Input />
-              </FormControl>
-
-              <FormControl bg={"#"}>
-                <FormControl.Label>Soy estudiante:</FormControl.Label>
-                <Input />
-              </FormControl>
-
-
-              <FormControl bg={"#"}>
-                <FormControl.Label>Trabajo anterior:</FormControl.Label>
-                <Input />
-              </FormControl>
-
-              <FormControl >
-                <FormControl.Label>PAISES QUE HA VIAJADO EN LOS ULTIMOS 5 AÑOS:</FormControl.Label>
-                <Input />
-              </FormControl>
-
-
-              <FormControl >
-                <FormControl.Label>¿IDIOMAS QUE HABLA A PARTE DEL ESTAÑOL? :</FormControl.Label>
-                <Input />
-              </FormControl>
-
-              <FormControl >
-                <FormControl.Label>¿EN SU ESTANCIA EN USA , HA TENIDO ALGUN PROBLEMA? SI? NO? EXPLIQUE.:</FormControl.Label>
-                <Input />
-              </FormControl>
-
-              <FormControl >
-                <FormControl.Label>¿HA SIDO DEPORTADO , SALIDA VOLUNTARIA? NO? SI? EXPLIQUE:</FormControl.Label>
-                <Input />
-              </FormControl>
-              <FooterBotons/>
-            </Stack>
-          )
-    default:
-      return(
-        <>
-        <Text>Hola</Text>
-        <Button onPress={()=>setState(0)}>Volver</Button>
-        </>
-      )
-   
-  }
-}
 
 useEffect(() => {
 console.log("sexo", sexo);
@@ -292,6 +120,7 @@ const Ayuda=(props)=>{
         <Text fontSize={"2xl"} >Formulário para tramitar VISA americana ( {state} ) </Text>
         
       </Stack>
+
       {/* Valor inicial, bienvenida */}
       {state===0 ?
       (
@@ -430,8 +259,8 @@ const Ayuda=(props)=>{
             <FormControl.Label>¿Cuál es tu otra nacionalidad?</FormControl.Label>
               <Input placeholder="Nacionalidad" 
         
-              value={nacionalidad}
-              onChangeText={(e)=>{setNacionalidad(e)}} />
+              value={otraNacionalidad}
+              onChangeText={(e)=>{setOtraNacionalidad(e)}} />
               </>
             ) : null}
           </FormControl>
@@ -476,8 +305,7 @@ const Ayuda=(props)=>{
             <Input />
             <FormControl.Label>LUGAR DE NACIMIENTO:</FormControl.Label>
             <Input />
-            <FormControl.Label>NOMBRE COMPLETO:</FormControl.Label>
-            <Input />
+
 
             { estadoCivil ===2 ? (
               <>
@@ -494,14 +322,14 @@ const Ayuda=(props)=>{
         </FormControl>
 
        <>
-       <Divider orientation="vertical" h={16} thickness={2} mx={2} />
+       <Divider orientation="vertical" bg="muted.600" h={40} thickness={2} mx={2} />
        
-       <Stack w="40%">
+       <Stack w="40%" bg="muted.300" borderRadius={20} pl={4} py={2}>
             <Stack direction={"row"}>
-              <Text bold>Ayuda:</Text>
+              <Text bold color={"warning.800"} >Ayuda: </Text>
               <Text>Estado civil</Text>
             </Stack>
-            <Divider thickness={2}/>
+            <Divider thickness={2} w="90%" bg="muted.600"/>
 
           <Text>Introduzca datos de su esposa, ex-esposa ó pareja según sea el caso.</Text>
         </Stack>
@@ -542,41 +370,75 @@ const Ayuda=(props)=>{
                 SIMPLEMENTE AGREGUE “HOTEL, Y LA CIUDAD Y ESTADO QUE VISITARÁ”  " />
           </Stack>
 
-          <FormControl>
-            <FormControl.Label>¿QUIEN CUBRIRÁ LOS GASTOS DE SU VIAJE? NOMBRE DE LA PERSONA, TELÉFONO , DIRECCIÓN ,
-            E-MAIL . Recuerde que únicamente de padres a hijos y de hijos a padres se pueden cubrir los
-            gastos de viaje o entre esposos. No abuelos o novios o tios.</FormControl.Label>
+          <Stack direction={"row"} my={3}>
+          <FormControl w="60%">
+            <FormControl.Label>¿QUIEN CUBRIRÁ LOS GASTOS DE SU VIAJE?</FormControl.Label>
+            <FormControl.Label> NOMBRE COMPLETO: </FormControl.Label>
+            <Input />
+            <FormControl.Label>TELEFONO: </FormControl.Label>
+            <Input />
+            <FormControl.Label>DIRECCIÓN: </FormControl.Label>
+            <Input />
+            <FormControl.Label>E-MAIL: </FormControl.Label>
             <Input />
           </FormControl>
+          <Ayuda titulo="Gastos de viaje" text="Recuerde que únicamente de padres a hijos y de hijos a padres se pueden cubrir los
+            gastos de viaje o entre esposos. No abuelos o novios o tios."/>
+          </Stack>
 
-          <FormControl>
-            <FormControl.Label>¿USTED VIAJARÁ SÓLO? SI? NO? EN CASO DE ALGUIEN VIAJE CON USTED , FAVOR DE AGREGAR ,
-              NOMBRES COMPLETOS. </FormControl.Label>
-            <Input />
-          </FormControl>
 
-          <FormControl>
-            <FormControl.Label>FECHA DE SU ULTIMA ENTRADA A USA? DD/MM/AAAA En caso de no recordarlo, agregue una
-              fecha tentativa o busque en los sellos de entrada en sus pasaportes.</FormControl.Label>
-            <Input />
-          </FormControl>
+          <Stack direction={"row"} >
+            <FormControl w="60%">
+              <FormControl.Label>¿USTED VIAJARÁ SÓLO?   </FormControl.Label>
+                <Checkbox  isChecked={viajaSolo} value={otraNacion}
+                onChange={() => setViajaSolo(true)} my={2}>
+                      SI
+                </Checkbox>
 
-          <FormControl>
-            <FormControl.Label>Y por cuantos días ingresó?</FormControl.Label>
+                <Checkbox  isChecked={!viajaSolo}  value={!otraNacion}
+                onChange={() => setViajaSolo(false)}my={2}>
+                      NO
+              </Checkbox>
+              {!viajaSolo ? (
+              <>
+              <FormControl.Label>NOMBRES COMPLETOS: </FormControl.Label>
+                <Input placeholder="NOMBRES DE ACOMPAÑANTES:" 
+          
+                value={otraNacionalidad}
+                onChangeText={(e)=>{setOtraNacionalidad(e)}} />
+                </>
+              ) : null}
+            </FormControl>
+            <Ayuda titulo="Acompañantes" text="EN CASO DE ALGUIEN VIAJE CON USTED , FAVOR DE AGREGAR , NOMBRES COMPLETOS."/>
+          </Stack> 
+
+          <Stack direction={"row"} my={3} > 
+            <FormControl w="60%">
+              <FormControl.Label>FECHA DE SU ULTIMA ENTRADA A USA? DD/MM/AAAA </FormControl.Label>
+              <Input />
+            </FormControl>
+            <Ayuda tittulo="Ultima entrada a USA" text="En caso de no recordarlo, agregue una
+                fecha tentativa o busque en los sellos de entrada en sus pasaportes." />
+          </Stack>
+
+          <FormControl  w="60%">
+            <FormControl.Label>¿Y por cuantos días ingresó?</FormControl.Label>
             <Input />
           </FormControl>
 
           <FormControl>
             <FormControl.Label>¿USTED HA TENIDO VISA ANTERIORMENTE? </FormControl.Label>
-            <Stack direction={"row"} justifyContent={"space-between"} px={10}>
-              <Checkbox value="one" my={2}>
+            
+              <Checkbox isChecked={visaAnterior} value={visaAnterior} my={2}
+              onChange={()=>setVisaAnterior(true)}>
                 Si
               </Checkbox>
-              <Checkbox value="one" my={2}>
+              <Checkbox isChecked={!visaAnterior} value={!visaAnterior} my={2}
+              onChange={()=>setVisaAnterior(false)}>
                 No
               </Checkbox>
 
-            </Stack>
+            
 
           </FormControl>
 
@@ -587,18 +449,288 @@ const Ayuda=(props)=>{
           </View>
       ) : null}
 
+      { state === 5 ? (
+        <View mx={"10%"}>
+            <FormControl>
+                <FormControl.Label>INGRESA TU DIRECCIÓN COMPLETA</FormControl.Label>
+               
+              </FormControl>
+              <FormControl>
+                <FormControl.Label>CALLE: </FormControl.Label>
+                <Input />
+              </FormControl>
+
+              <FormControl>
+                <FormControl.Label>NÚMERO: </FormControl.Label>
+                <Input />
+              </FormControl>
+
+              <FormControl>
+                <FormControl.Label>COLONIA: </FormControl.Label>
+                <Input />
+              </FormControl>
+              <FormControl>
+                <FormControl.Label>CÓDIGO POSTAL: </FormControl.Label>
+                <Input />
+              </FormControl>
+              <FormControl>
+                <FormControl.Label>ESTADO: </FormControl.Label>
+                <Input />
+              </FormControl>
+
+              <FormControl>
+                <FormControl.Label>CIUDAD: </FormControl.Label>
+                <Input />
+              </FormControl>
+
+              <Divider/>
+
+              
+              <FooterBotons/>
+          </View>
+      ) : null}
+
+      { state === 6 ? (
+          <Stack mx={"10%"} space={4}>
+            <FormControl>
+              <FormControl.Label>TELEFONOS DE CASA, CELULAR Y TRABAJO</FormControl.Label>
+              <Text>CASA:</Text>
+              <Input />
+              <Text>CELULAR:</Text>
+              <Input />
+              <Text>TRABAJO:</Text>
+              <Input />
+            </FormControl>
+
+            <FormControl>
+              <FormControl.Label>CORREO ELECTRÓNICO:</FormControl.Label>
+              <Input />
+            </FormControl>
+
+            <FormControl w="60%">
+              <FormControl.Label>¿TIENES REDES SOCIALES? </FormControl.Label>
+                <Checkbox  isChecked={viajaSolo} value={viajaSolo}
+                onChange={() => setViajaSolo(true)} my={2}>
+                      SI
+                </Checkbox>
+
+                <Checkbox  isChecked={!viajaSolo}  value={!viajaSolo}
+                onChange={() => setViajaSolo(false)}my={2}>
+                      NO
+              </Checkbox>
+              {viajaSolo ? (
+              <>
+            <FormControl>
+              <FormControl.Label>-¿COMO APARECES EN FACEBOOK? </FormControl.Label>
+              <Input />
+            </FormControl>
+
+            <FormControl>
+              <FormControl.Label>¿COMO APARECES EN INSTAGRAM? </FormControl.Label>
+              <Input />
+            </FormControl>
+            </>
+              ) : null}
+            </FormControl>
 
 
-      
-     
 
-  
-     
+            
+            <FooterBotons/>
+          </Stack>
+      ) : null}
+
+      { state === 7 ? (
+      <Stack mx={"10%"}>
+        <FormControl bg={"#"} >
+          <FormControl.Label >DOMICILIO DONDE SE HOSPEDARÁ EN USA:</FormControl.Label>
+          <Input />
+        </FormControl>
+        <Divider mt={2}/>
+
+        <FormControl bg={"#"} my={2}>
+          <FormControl.Label my={2}>NOMBRE DE SUS PADRES COMPLETO Y FECHAS DE NACIMIENTO:</FormControl.Label>
+          <Input />
+        </FormControl>
+
+        <FormControl bg={"#"} my={2}>
+          <FormControl.Label my={2}>NOMBRE DE SU PADRE:</FormControl.Label>
+          <Input />
+        </FormControl>
+
+        <FormControl bg={"#"} my={2}>
+          <FormControl.Label my={2}>FECHA DE NACIMIENTO DE SU PADRE:</FormControl.Label>
+          <Input />
+        </FormControl>
+
+        <FormControl bg={"#"} my={2}>
+          <FormControl.Label my={2}>NOMBRE DE SU MADRE:</FormControl.Label>
+          <Input />
+        </FormControl>
+
+        <FormControl bg={"#"} my={2}>
+          <FormControl.Label my={2}>FECHA DE NACIMIENTO DE SU MADRE:</FormControl.Label>
+          <Input />
+        </FormControl>
+
+
+
+        <Divider/>
+
+
+
  
-      
-      
 
-      
+        <FormControl >
+              <FormControl.Label>¿TIENE ALGUN PARIENTE DIRECTO COMO HIJOS O HERMANOS VIVIENDO EN USA? </FormControl.Label>
+                <Checkbox  isChecked={tieneParientes} value={tieneParientes}
+                onChange={() => setTieneParientes(true)} my={2}>
+                      SI
+                </Checkbox>
+
+                <Checkbox  isChecked={!tieneParientes}  value={!tieneParientes}
+                onChange={() => setTieneParientes(false)}my={2}>
+                      NO
+              </Checkbox>
+              {tieneParientes ? (
+              <>
+            <FormControl>
+              <FormControl.Label>NOMBRE COMPLETO: </FormControl.Label>
+              <Input />
+            </FormControl>
+
+            <FormControl>
+              <FormControl.Label>PARENTESCO CON USTED </FormControl.Label>
+              <Input />
+            </FormControl>
+            <Stack direction={"row"} my={3}>
+            <FormControl w="60%">
+              <FormControl.Label>ESTATUS LEGAL </FormControl.Label>
+              <Input />
+            </FormControl>
+            <Ayuda tittulo="Estatus legal" text="EL ESTATUS LEGAL (CIUDADANO AMERICANO, RESIDENTE PERMANENTE, VISA DE TRABAJO O NO LO SE)" />
+
+            </Stack>
+            </>
+              ) : null}
+          </FormControl>
+
+
+
+        
+        <FooterBotons/>
+      </Stack>
+      ) : null }
+
+
+      { state === 8 ? (
+        <Stack mx={"10%"}>
+          <FormControl.Label>INFORMACIÓN LABORAL</FormControl.Label>
+          <Divider/>
+          <FormControl.Label>TRABAJO ACTUAL</FormControl.Label>
+          <FormControl bg={"#"}>
+            <FormControl.Label>NOMBRE DE LA EMPRESA: </FormControl.Label>
+            <Input />
+          </FormControl>
+
+          <FormControl bg={"#"}>
+            <FormControl.Label>DIRECCIÓN COMPLETA DE LA EMPRESA: </FormControl.Label>
+            <Input />
+          </FormControl>
+
+          <FormControl bg={"#"}>
+            <FormControl.Label>TELÉFONO DE LA EMPRESA: </FormControl.Label>
+            <Input />
+          </FormControl>
+
+          <FormControl bg={"#"}>
+            <FormControl.Label>SUELDO MENSUAL BRUTO: </FormControl.Label>
+            <Input />
+          </FormControl>
+
+          <FormControl bg={"#"}>
+            <FormControl.Label>¿CUÁL ES SU CARGO? </FormControl.Label>
+            <Input />
+          </FormControl>
+
+          <FormControl >
+              <FormControl.Label>¿ERES ESTUDIANTE? </FormControl.Label>
+                <Checkbox  isChecked={esEstudiante} value={esEstudiante}
+                onChange={() => setEsEstudiante(true)} my={2}>
+                      SI
+                </Checkbox>
+
+                <Checkbox  isChecked={!esEstudiante}  value={!esEstudiante}
+                onChange={() => setEsEstudiante(false)}my={2}>
+                      NO
+              </Checkbox>
+              {esEstudiante ? (
+              <>
+              <FormControl>
+                <FormControl.Label>NOMBRE DE LA ESCUELA: </FormControl.Label>
+                <Input />
+              </FormControl>
+
+              <FormControl>
+                <FormControl.Label>DIRECCIÓN DE LA ESCUELA: </FormControl.Label>
+                <Input />
+              </FormControl>
+
+              <FormControl>
+                <FormControl.Label>FECHA DE INGRESO: </FormControl.Label>
+                <Input />
+              </FormControl>
+
+              <FormControl>
+                <FormControl.Label>GRADO ACTUAL QUE ESTA CURSANDO</FormControl.Label>
+                <Input />
+              </FormControl>
+
+            </>
+
+              ) : null}
+
+          </FormControl>
+
+
+          <FormControl bg={"#"}>
+            <FormControl.Label>Trabajo anterior:</FormControl.Label>
+            <Input />
+          </FormControl>
+
+          
+          <FooterBotons/>
+        </Stack>
+      ) : null }
+
+      { state === 9 ? (
+         <>
+         <FormControl >
+            <FormControl.Label>PAISES QUE HA VIAJADO EN LOS ULTIMOS 5 AÑOS:</FormControl.Label>
+            <Input />
+          </FormControl>
+
+
+          <FormControl >
+            <FormControl.Label>¿IDIOMAS QUE HABLA A PARTE DEL ESPAÑOL? :</FormControl.Label>
+            <Input />
+          </FormControl>
+
+          <FormControl >
+            <FormControl.Label>¿EN SU ESTANCIA EN USA , HA TENIDO ALGUN PROBLEMA? ¿SI? ¿NO? EXPLIQUE:</FormControl.Label>
+            <Input />
+          </FormControl>
+
+          <FormControl >
+            <FormControl.Label>¿HA SIDO DEPORTADO , SALIDA VOLUNTARIA? ¿SI? ¿NO? EXPLIQUE:</FormControl.Label>
+            <Input />
+          </FormControl>
+          <Button mx="15%" my={6} onPress={()=>{alert("en construcción")}}>
+            Verificar información
+          </Button>
+          <BotonVolver/>
+         </>
+      ) : null}
       
     </ScrollView>
     </NativeBaseProvider>
