@@ -1,12 +1,13 @@
-import {  ScrollView, FormControl, Input,
+import {  ScrollView, FormControl, Input, 
   Text, Image, Stack, Box, Button, Icon, View, Divider, Checkbox, NativeBaseProvider
 } from "native-base";
 import React, {useEffect, useState} from "react";
 import Titulo from "./components/titulo";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { ImageUriCache } from "react-native-web/dist/cjs/modules/ImageLoader";
 
 function App() {
-  const [state, setState] = useState(9);
+  const [state, setState] = useState(0);
   // nueva true, renovacion false
   const [ nueva, setNueva] = useState(true);
 
@@ -30,6 +31,84 @@ function App() {
    const [ visaAnterior, setVisaAnterior ] = useState(Boolean);
    const [ tieneParientes, setTieneParientes ] = useState(Boolean);
    const [ esEstudiante, setEsEstudiante ] = useState(Boolean);
+
+
+
+   //IMAGENES
+    const [ images, setImages ] = useState([]);
+
+    const [ imageURLs, setImageURLs ] = useState([]);
+
+  useEffect(() => {
+    if (images.length < 1 ) return;
+    const newImageUrls = [];
+    images.forEach(image=> newImageUrls.push(URL.createObjectURL(image)));
+    setImageURLs(newImageUrls);
+    console.log("IMAGES: ", images);
+  }, [images]);
+  useEffect(() => {
+    console.log("imageURLS", imageURLs);
+    
+  }, [imageURLs]);
+  function onImageChange(e) {
+    setImages([...e.target.files])
+  }
+
+  //pasaporte
+  const [ pasaporteIMG, setPasaporteIMG ] = useState([]); 
+  const [ pasaporteURL, setPasaporteURL ] = useState([]); 
+  useEffect(() => {
+    if (pasaporteIMG.length < 1 ) return;
+    const newPassUrls = [];
+    pasaporteIMG.forEach(image=> newPassUrls.push(URL.createObjectURL(image)));
+    setPasaporteURL(newPassUrls);
+    console.log("pasaporte: ", pasaporteIMG);
+  }, [pasaporteIMG]);
+
+  function onPassChange(e) {
+    setPasaporteIMG([...e.target.files])
+  }
+
+    //VISA frontal
+    const [ visa1, setVisa1] = useState([]); 
+    const [ visa1URL, setVisa1URL ] = useState([]); 
+    useEffect(() => {
+      if (visa1.length < 1 ) return;
+      const newVisaUrls = [];
+      visa1.forEach(image=> newVisaUrls.push(URL.createObjectURL(image)));
+      setVisa1URL(newVisaUrls);
+      console.log("visa1 front: ", visa1);
+    }, [visa1]);
+
+    function onVisa1Change(e) {
+      setVisa1([...e.target.files])
+    }
+
+    //VISA trasera
+    const [ visa2, setVisa2] = useState([]); 
+    const [ visa2URL, setVisa2URL ] = useState([]); 
+    useEffect(() => {
+      if (visa2.length < 1 ) return;
+      const newVisa2Urls = [];
+      visa2.forEach(image=> newVisa2Urls.push(URL.createObjectURL(image)));
+      setVisa2URL(newVisa2Urls);
+      console.log("visa2 front: ", visa2);
+    }, [visa2]);
+
+    function onVisa2Change(e) {
+      setVisa2([...e.target.files])
+    }
+
+  
+
+
+
+
+
+
+    //fin IMAGENES
+
+
  useEffect(() => {
 console.log("paterno", paterno);
 
@@ -139,8 +218,45 @@ const Ayuda=(props)=>{
         información relevante. 
         </Text>
 
+        <Stack mx="10%" mt={5} px={4} py={3} shadow={6} bg="muted.200" borderRadius={10}>
+          <Text bold alignSelf={"center"} fontSize={"lg"} py={2}>Favor de llenar con tus datos personales</Text>
+
+          <FormControl.Label>FOTO DE TU PASAPORTE:</FormControl.Label>
+
+          <input type="file" multiple accept="image/*" onChange={onPassChange}/>
+          { pasaporteURL.map(imageSrc=> 
+          <img style={{width:"50%", height:"auto", alignSelf:"center", marginTop:10, }} 
+          src={imageSrc} alt={imageSrc} /> 
+          ) }
+
+
+          <FormControl mt={4}>
+            <FormControl.Label>Whatsapp:</FormControl.Label>
+            <Input  placeholder="Whatsapp" 
+                  value={paterno}
+                  // onChangeText={(e)=>{setPaterno(e)}}
+            />
+          </FormControl>
+          <FormControl>
+            <FormControl.Label>TELÉFONO FIJO:</FormControl.Label>
+            <Input  placeholder="Whatsapp" 
+                  value={paterno}
+                  // onChangeText={(e)=>{setPaterno(e)}}
+            />
+          </FormControl>
+          <FormControl>
+            <FormControl.Label>CORREO ELECTRÓNICO PERSONAL:</FormControl.Label>
+            <Input  placeholder="Whatsapp" 
+                  value={paterno}
+                  // onChangeText={(e)=>{setPaterno(e)}}
+            />
+          </FormControl>
+
+        </Stack>
+
         <Text alignSelf={"center"} bold my={2} mt={10}>¿Es la primera vez que tramitas tu VISA?</Text>
         <Stack direction={"row"} space={10} alignSelf={"center"} >
+       
         <Button onPress={()=>handleFirst(2, true)}  my={5}>
           Primera vez
         </Button>
@@ -157,20 +273,29 @@ const Ayuda=(props)=>{
       {state===1 ? (
         <>
           <Titulo texto={"Renovación de VISA"}/>
-          <Stack mt={3} mb={10}>
-           
-            
-          <Button  onPress={()=>{alert("En proceso. . .")}}
-          size={"lg"} leftIcon={<Icon as={FaCloudUploadAlt}  size="xl"  color={"#ffffff"}/>}>
-            Subir 
-          </Button>
 
+          <Text bold fontSize={"lg"} alignSelf={"center"}>Favor de subir foto de su VISA</Text>
 
+          <Stack mt={3} mb={10} mx="10%">
+            <Text bold fontSize={"lg"} alignSelf={"center"} color="muted.700">Foto FRONTAL de su VISA</Text>
+            <input type="file" multiple accept="image/*" onChange={onVisa1Change} style={{alignSelf:"center"}}/>
+            { visa1URL.map(imageSrc=> 
+            <img style={{width:"50%", height:"auto", alignSelf:"center", marginTop:10, }} 
+            src={imageSrc} alt={imageSrc} /> ) }
           </Stack>
 
-          <Button onPress={()=>handleFirst(2, false)}  my={5}>
+          <Stack mt={3} mb={10} mx="10%">
+            <Text bold fontSize={"lg"} alignSelf={"center"} color="muted.700">Foto TRASERA de su VISA</Text>
+            <input type="file" multiple accept="image/*" onChange={onVisa2Change} style={{alignSelf:"center"}}/>
+            { visa2URL.map(imageSrc=> 
+            <img style={{width:"50%", height:"auto", alignSelf:"center", marginTop:10, }} 
+            src={imageSrc} alt={imageSrc} /> ) }
+          </Stack>
+
+          <Button onPress={()=>handleFirst(2, false)} mx="15%" my={5}>
             Continuar
           </Button>
+
 
           <BotonVolver/>
           </>
@@ -521,7 +646,7 @@ const Ayuda=(props)=>{
               {viajaSolo ? (
               <>
             <FormControl>
-              <FormControl.Label>-¿COMO APARECES EN FACEBOOK? </FormControl.Label>
+              <FormControl.Label>¿COMO APARECES EN FACEBOOK? </FormControl.Label>
               <Input />
             </FormControl>
 
