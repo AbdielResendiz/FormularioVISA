@@ -3,15 +3,21 @@ import {  ScrollView, FormControl, Input,
 } from "native-base";
 import React, {useEffect, useState} from "react";
 import Titulo from "./components/titulo";
-import { PDFViewer, Page, Text as TextPDF, View as ViewPDF, Document, StyleSheet } from '@react-pdf/renderer';
+import { PDFViewer, Page, Image as ImagePDF,Text as TextPDF, View as ViewPDF, Document, StyleSheet } from '@react-pdf/renderer';
 
 
 function App() {
-  const [state, setState] = useState(5);
+  const [state, setState] = useState(10);
   // nueva true, renovacion false
   const [ nueva, setNueva] = useState(true);
 
   //variables
+
+  //0.
+  const [ wa, setWa ] = useState("");
+  const [ telefono1, setTelefono1 ] = useState("");
+  const [ correo1, setCorreo1 ] = useState("");
+
   //1.
    const [ nombre, setNombre] = useState("");
    const [ paterno, setPaterno] = useState("");
@@ -170,26 +176,57 @@ const handleGastosChange = (name, value) => {
 // Create styles
 const styles = StyleSheet.create({
   page: {
-    flexDirection: 'row',
+  //  flexDirection: 'column',
     backgroundColor: '#E4E4E4'
   },
   section: {
     margin: 10,
     padding: 10,
-    flexGrow: 1
-  }
+    flexGrow: 1,
+    marginTop: 20,
+    
+  },
+  mid:{
+    width: "50%"
+  },
+  row:{
+    flexDirection:"row"
+  },
+  image: {
+    width: 50,
+    height: 50,
+  },
 });
 
 // Create Document Component
 const MyDocument = () => (
   <Document>
     <Page size="A4" style={styles.page}>
-      <ViewPDF style={styles.section}>
-        <TextPDF>Section #1</TextPDF>
+      <ViewPDF style={{margin:10, padding:10, alignSelf:"center", flexDirection:"row"}}>
+
+        <TextPDF > Formulário para tramitar VISA americana</TextPDF>
       </ViewPDF>
+
       <ViewPDF style={styles.section}>
-        <TextPDF>Section #2</TextPDF>
+        <TextPDF> Nombre: {nombre + " " + paterno + " " + materno} </TextPDF>
+
+        <ViewPDF style={{flexDirection:"row", justifyContent:"space-beetwen", marginTop:10}}>
+          <TextPDF style={styles.mid}> Whatsapp: 443564356{wa} </TextPDF>
+          <TextPDF>Teléfono fijo: {telefono1} </TextPDF>
+        </ViewPDF>
+        
+        <TextPDF> Correo electrónico personal: {correo1}</TextPDF>
+        <TextPDF> Sexo: {sexo ? "Masculino" : "Femenino"} </TextPDF>
+        <TextPDF> Nacionalidad: {nacionalidad}</TextPDF>
+        <ViewPDF style={{flexDirection:"row", justifyContent:"space-beetwen", marginTop:10}}>
+          <TextPDF style={styles.mid}> ¿Tiene otra nacionalidad? {wa} </TextPDF>
+          <TextPDF>Teléfono fijo: {telefono1} </TextPDF>
+        </ViewPDF>
+
+        <TextPDF> </TextPDF>
+ 
       </ViewPDF>
+
     </Page>
   </Document>
 );
@@ -244,22 +281,22 @@ const MyDocument = () => (
           <FormControl mt={4}>
             <FormControl.Label>Whatsapp:</FormControl.Label>
             <Input  placeholder="Whatsapp" 
-                  value={paterno}
-                  // onChangeText={(e)=>{setPaterno(e)}}
+                  value={wa}
+                  onChangeText={(e)=>{setWa(e)}}
             />
           </FormControl>
           <FormControl>
-            <FormControl.Label>TELÉFONO FIJO:</FormControl.Label>
-            <Input  placeholder="Whatsapp" 
-                  value={paterno}
-                  // onChangeText={(e)=>{setPaterno(e)}}
+            <FormControl.Label>Teléfono fijo:</FormControl.Label>
+            <Input  placeholder="Teléfono fijo" 
+                  value={telefono1}
+                  onChangeText={(e)=>{setTelefono1(e)}}
             />
           </FormControl>
           <FormControl>
-            <FormControl.Label>CORREO ELECTRÓNICO PERSONAL:</FormControl.Label>
-            <Input  placeholder="Whatsapp" 
-                  value={paterno}
-                  // onChangeText={(e)=>{setPaterno(e)}}
+            <FormControl.Label>Correo electrónico personal:</FormControl.Label>
+            <Input  placeholder="Correo electrónico personal" 
+                  value={correo1}
+                  onChangeText={(e)=>{setCorreo1(e)}}
             />
           </FormControl>
 
@@ -317,7 +354,7 @@ const MyDocument = () => (
             <Titulo texto={nueva ? "Tramita tu VISA por primera vez" : "Renovación de VISA"}/>
             <Stack space={3}>
               <FormControl>
-                <FormControl.Label>APELLIDO PATERNO:</FormControl.Label>
+                <FormControl.Label>Apellido paterno:</FormControl.Label>
                 <Input  placeholder="Apellido paterno" 
                      
                      value={paterno}
@@ -327,7 +364,7 @@ const MyDocument = () => (
               </FormControl>
 
               <FormControl>
-                <FormControl.Label>APELLIDO MATERNO:</FormControl.Label>
+                <FormControl.Label>Apellido materno:</FormControl.Label>
                 <Input placeholder="Apellido materno" 
                      maxLength={20}
                      value={materno}
@@ -335,7 +372,7 @@ const MyDocument = () => (
               </FormControl>
 
               <FormControl>
-                <FormControl.Label>NOMBRES:</FormControl.Label>
+                <FormControl.Label>Nombres:</FormControl.Label>
                 <Input placeholder="Nombres" 
                      
                      value={nombre}
@@ -343,7 +380,7 @@ const MyDocument = () => (
               </FormControl>
 
               <FormControl mb={4} >
-                <FormControl.Label>SEXO:</FormControl.Label>
+                <FormControl.Label>Sexo:</FormControl.Label>
                 
                   <Checkbox  isChecked={sexo} value={sexo}
         onChange={() => setSexo(true)} my={2}>
@@ -371,7 +408,7 @@ const MyDocument = () => (
         <Stack px={"10%"} direction={"column"} space={3}>
 
           <FormControl>
-            <FormControl.Label>NACIONALIDAD:</FormControl.Label>
+            <FormControl.Label>Nacionalidad:</FormControl.Label>
             <Input placeholder="Nacionalidad" 
                      
                      value={nacionalidad}
@@ -380,7 +417,7 @@ const MyDocument = () => (
 
 
           <FormControl>
-            <FormControl.Label>¿TIENE OTRA NACIONALIDAD A PARTE DE LA ARRIBA MENCIONADA?</FormControl.Label>
+            <FormControl.Label>¿Tiene otra nacionalidad a parte de la arriba mencionada?</FormControl.Label>
               <Checkbox  isChecked={otraNacion} value={otraNacion}
               onChange={() => handleNacionChange(true)} my={2}>
                     SI
@@ -402,7 +439,7 @@ const MyDocument = () => (
           </FormControl>
 
           <FormControl bg={"#"}>
-            <FormControl.Label>ESTADO CIVIL:</FormControl.Label>
+            <FormControl.Label>Estado civil:</FormControl.Label>
             <Stack space={2}>
               <Checkbox  isChecked={ estadoCivil===0 ? true : false } 
                 value={estadoCivil} onChange={() => setEstadoCivil(0)} >
@@ -433,7 +470,7 @@ const MyDocument = () => (
           <Divider/>
             <FormControl.Label>Datos de la pareja</FormControl.Label>
 
-            <FormControl.Label>NOMBRE COMPLETO:</FormControl.Label>
+            <FormControl.Label>Nombre completo:</FormControl.Label>
             <Input
             placeholder="Nombre"
             value={pareja.nombre}
@@ -441,11 +478,11 @@ const MyDocument = () => (
           />
 
            
-            <FormControl.Label>FECHA DE NACIMIENTO:</FormControl.Label>
+            <FormControl.Label>Fecha de nacimiento:</FormControl.Label>
             <Input             placeholder="Fecha de nacimiento"
             value={pareja.fNacimiento}
             onChangeText={(value) => handleParejaChange('fNacimiento', value)}/>
-            <FormControl.Label>LUGAR DE NACIMIENTO:</FormControl.Label>
+            <FormControl.Label>Lugar de nacimiento:</FormControl.Label>
             <Input             placeholder="Lugar de nacimiento"
             value={pareja.lugarNac}
             onChangeText={(value) => handleParejaChange('lugarNac', value)}/>
@@ -453,11 +490,11 @@ const MyDocument = () => (
 
             { estadoCivil ===2 ? (
               <>
-                <FormControl.Label>FECHA DE INICIO LEGAL DEL MATRIMONIO:</FormControl.Label>
+                <FormControl.Label>Fecha de inicio legal del matrimonio:</FormControl.Label>
                 <Input  placeholder="Fecha de inicio legal del matrimonio"
                  value={pareja.inicioM}
                  onChangeText={(value) => handleParejaChange('inicioM', value)} />
-                <FormControl.Label>FECHA DE TERMINO LEGAL DEL MATRIMONIO:</FormControl.Label>
+                <FormControl.Label>Fecha de inicio legal del matrimonio:</FormControl.Label>
                 <Input  placeholder="Fecha de inicio legal del matrimonio"
                  value={pareja.finM}
                  onChangeText={(value) => handleParejaChange('finM', value)} />
@@ -503,30 +540,30 @@ const MyDocument = () => (
         <View px={"10%"}>
           <Stack direction={"row"}>
             <FormControl w="60%">
-              <FormControl.Label>FECHA TENTATIVA DE VIAJE: </FormControl.Label>
+              <FormControl.Label>Fecha tentativa de viaje: </FormControl.Label>
               <Input placeholder="Fecha tentativa de viaje" 
                      
                      value={fechaViaje}
                      onChangeText={(e)=>{setFechaViaje(e)}}/>
             </FormControl>
-            <Ayuda titulo="Fecha de viaje" text="NO DEBE DEJAR ESTE ESPACIO EN BLANCO"/>
+            <Ayuda titulo="Fecha de viaje" text="No debe dejar este espacio en blanco"/>
           </Stack>
 
           <Stack direction={"row"} mt={3}>
             <FormControl w="60%">
-              <FormControl.Label>DIRECCION DONDE SE HOSPEDARÁ EN USA </FormControl.Label>
+              <FormControl.Label>Direccion donde se hospedará en USA:  </FormControl.Label>
               <Input placeholder="Dirección de hospedaje" 
                      
                      value={direccionHospedaje}
                      onChangeText={(e)=>{setDireccionHospedaje(e)}}/>
             </FormControl>
-            <Ayuda titulo="Información de hospedaje" text="DIRECCIÓN  DE TU HOSPEDAJE EN CASO DE VISITAR A ALGÚN FAMILIAR O AMIGO O
-                SIMPLEMENTE AGREGUE “HOTEL, Y LA CIUDAD Y ESTADO QUE VISITARÁ”  " />
+            <Ayuda titulo="Información de hospedaje" text="Dirección  de tu hospedaje en caso de visitar a algún familiar o amigo o
+                simplemente agregue “hotel, y la ciudad y estado que visitará” " />
           </Stack>
 
           <Stack direction={"row"} my={3}>
           <FormControl w="60%">
-            <FormControl.Label>¿QUIEN CUBRIRÁ LOS GASTOS DE SU VIAJE?</FormControl.Label>
+            <FormControl.Label>¿Quién cubrirá los gastos de su viaje?</FormControl.Label>
             <FormControl.Label> NOMBRE COMPLETO: </FormControl.Label>
             <Input             placeholder="Nombre"
             value={gastosViaje.nombre}
@@ -893,7 +930,7 @@ const MyDocument = () => (
             <FormControl.Label>¿HA SIDO DEPORTADO , SALIDA VOLUNTARIA? ¿SI? ¿NO? EXPLIQUE:</FormControl.Label>
             <Input />
           </FormControl>
-          <Button mx="15%" my={6} onPress={()=>{alert("en construcción")}}>
+          <Button mx="15%" my={6} onPress={()=>setState(10)}>
             Verificar información
           </Button>
           <BotonVolver/>
@@ -906,11 +943,14 @@ const MyDocument = () => (
     </ScrollView>
 
     {state === 10 ? (
-      
+      <>
       <PDFViewer height={1200} width={"90%"} style={{alignSelf:"center"}}>
               <MyDocument />
       </PDFViewer>
-    
+      <Button mx="15%" my={6} onPress={()=>setState(9)}>
+        Volver
+      </Button>
+      </>
     
   ) : null }
 
