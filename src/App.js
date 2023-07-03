@@ -1,13 +1,13 @@
 import {  ScrollView, FormControl, Input, 
-  Text, Image, Stack, Box, Button, Icon, View, Divider, Checkbox, NativeBaseProvider
+  Text, Image, Stack, Box, Button, View, Divider, Checkbox, NativeBaseProvider
 } from "native-base";
 import React, {useEffect, useState} from "react";
 import Titulo from "./components/titulo";
-import { FaCloudUploadAlt } from "react-icons/fa";
-import { ImageUriCache } from "react-native-web/dist/cjs/modules/ImageLoader";
+import { PDFViewer, Page, Text as TextPDF, View as ViewPDF, Document, StyleSheet } from '@react-pdf/renderer';
+
 
 function App() {
-  const [state, setState] = useState(0);
+  const [state, setState] = useState(5);
   // nueva true, renovacion false
   const [ nueva, setNueva] = useState(true);
 
@@ -25,7 +25,13 @@ function App() {
    const [ nacionalidad, setNacionalidad] = useState("");
    const [ otraNacion, setOtraNacion] = useState(Boolean);
    const [ otraNacionalidad, setOtraNacionalidad] = useState("");
-
+   const [ pareja, setPareja ] = useState({nombre: "", fNacimiento:"", lugarNac:"", inicioM:"" , finM:""})
+   const [ fechaViaje, setFechaViaje ] = useState ("");
+   const [ direccionHospedaje, setDireccionHospedaje ] = useState("");
+   const [ gastosViaje, setGastosViaje ] = useState({nombre:"", tel:"", direccion:"", email:""});
+   const [ ultimaEntrada, setUltimaEntrada ] =useState("");
+   const [ diasUltima, setDiasUltima ] = useState("");
+   const [ direccion, setDireccion ] = useState({calle:"", numero:"", colonia:"", })
    const [ viajaSolo, setViajaSolo ] = useState(Boolean);
    const [ acompanantes, setAcompanantes ] = useState("");
    const [ visaAnterior, setVisaAnterior ] = useState(Boolean);
@@ -35,24 +41,6 @@ function App() {
 
 
    //IMAGENES
-    const [ images, setImages ] = useState([]);
-
-    const [ imageURLs, setImageURLs ] = useState([]);
-
-  useEffect(() => {
-    if (images.length < 1 ) return;
-    const newImageUrls = [];
-    images.forEach(image=> newImageUrls.push(URL.createObjectURL(image)));
-    setImageURLs(newImageUrls);
-    console.log("IMAGES: ", images);
-  }, [images]);
-  useEffect(() => {
-    console.log("imageURLS", imageURLs);
-    
-  }, [imageURLs]);
-  function onImageChange(e) {
-    setImages([...e.target.files])
-  }
 
   //pasaporte
   const [ pasaporteIMG, setPasaporteIMG ] = useState([]); 
@@ -99,13 +87,6 @@ function App() {
       setVisa2([...e.target.files])
     }
 
-  
-
-
-
-
-
-
     //fin IMAGENES
 
 
@@ -114,7 +95,6 @@ console.log("paterno", paterno);
 
  }, [paterno]);
  
-
   useEffect(() => {
     console.log("nueva? ", nueva);
     
@@ -142,7 +122,6 @@ console.log("paterno", paterno);
       </Stack>
     )
   }
-
   
   const handleFirst= (state, value)=>{
     setNueva(value);
@@ -150,16 +129,11 @@ console.log("paterno", paterno);
 
   }
 
-
 useEffect(() => {
 console.log("sexo", sexo);
 
 }, [sexo]);
 
-
-const handleSexoChange = (value) => {
-  setSexo(value);
-};
 const handleNacionChange = (value) => {
   setOtraNacion(value);
 };
@@ -183,7 +157,44 @@ const Ayuda=(props)=>{
   );
 }
 
+const handleParejaChange = (name, value) => {
+  setPareja({ ...pareja, [name]: value });
+};
 
+const handleGastosChange = (name, value) => {
+  setGastosViaje({ ...gastosViaje, [name]: value });
+};
+
+//PDF INICIA
+
+// Create styles
+const styles = StyleSheet.create({
+  page: {
+    flexDirection: 'row',
+    backgroundColor: '#E4E4E4'
+  },
+  section: {
+    margin: 10,
+    padding: 10,
+    flexGrow: 1
+  }
+});
+
+// Create Document Component
+const MyDocument = () => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      <ViewPDF style={styles.section}>
+        <TextPDF>Section #1</TextPDF>
+      </ViewPDF>
+      <ViewPDF style={styles.section}>
+        <TextPDF>Section #2</TextPDF>
+      </ViewPDF>
+    </Page>
+  </Document>
+);
+
+//PDFfin
 
   return (
     <NativeBaseProvider>
@@ -335,11 +346,11 @@ const Ayuda=(props)=>{
                 <FormControl.Label>SEXO:</FormControl.Label>
                 
                   <Checkbox  isChecked={sexo} value={sexo}
-        onChange={() => handleSexoChange(true)} my={2}>
+        onChange={() => setSexo(true)} my={2}>
                     Masculino
                   </Checkbox>
                   <Checkbox  isChecked={!sexo}  value={!sexo}
-        onChange={() => handleSexoChange(false)}my={2}>
+        onChange={() => setSexo(false)}my={2}>
                     Femenino
                   </Checkbox>
              
@@ -382,7 +393,7 @@ const Ayuda=(props)=>{
             {otraNacion ? (
             <>
             <FormControl.Label>¿Cuál es tu otra nacionalidad?</FormControl.Label>
-              <Input placeholder="Nacionalidad" 
+              <Input placeholder=" otra nacionalidad" 
         
               value={otraNacionalidad}
               onChangeText={(e)=>{setOtraNacionalidad(e)}} />
@@ -423,21 +434,33 @@ const Ayuda=(props)=>{
             <FormControl.Label>Datos de la pareja</FormControl.Label>
 
             <FormControl.Label>NOMBRE COMPLETO:</FormControl.Label>
-            <Input />
+            <Input
+            placeholder="Nombre"
+            value={pareja.nombre}
+            onChangeText={(value) => handleParejaChange('nombre', value)}
+          />
 
            
             <FormControl.Label>FECHA DE NACIMIENTO:</FormControl.Label>
-            <Input />
+            <Input             placeholder="Fecha de nacimiento"
+            value={pareja.fNacimiento}
+            onChangeText={(value) => handleParejaChange('fNacimiento', value)}/>
             <FormControl.Label>LUGAR DE NACIMIENTO:</FormControl.Label>
-            <Input />
+            <Input             placeholder="Lugar de nacimiento"
+            value={pareja.lugarNac}
+            onChangeText={(value) => handleParejaChange('lugarNac', value)}/>
 
 
             { estadoCivil ===2 ? (
               <>
                 <FormControl.Label>FECHA DE INICIO LEGAL DEL MATRIMONIO:</FormControl.Label>
-                <Input />
+                <Input  placeholder="Fecha de inicio legal del matrimonio"
+                 value={pareja.inicioM}
+                 onChangeText={(value) => handleParejaChange('inicioM', value)} />
                 <FormControl.Label>FECHA DE TERMINO LEGAL DEL MATRIMONIO:</FormControl.Label>
-                <Input />
+                <Input  placeholder="Fecha de inicio legal del matrimonio"
+                 value={pareja.finM}
+                 onChangeText={(value) => handleParejaChange('finM', value)} />
               </>
             ) : null}
             
@@ -481,7 +504,10 @@ const Ayuda=(props)=>{
           <Stack direction={"row"}>
             <FormControl w="60%">
               <FormControl.Label>FECHA TENTATIVA DE VIAJE: </FormControl.Label>
-              <Input />
+              <Input placeholder="Fecha tentativa de viaje" 
+                     
+                     value={fechaViaje}
+                     onChangeText={(e)=>{setFechaViaje(e)}}/>
             </FormControl>
             <Ayuda titulo="Fecha de viaje" text="NO DEBE DEJAR ESTE ESPACIO EN BLANCO"/>
           </Stack>
@@ -489,7 +515,10 @@ const Ayuda=(props)=>{
           <Stack direction={"row"} mt={3}>
             <FormControl w="60%">
               <FormControl.Label>DIRECCION DONDE SE HOSPEDARÁ EN USA </FormControl.Label>
-              <Input />
+              <Input placeholder="Dirección de hospedaje" 
+                     
+                     value={direccionHospedaje}
+                     onChangeText={(e)=>{setDireccionHospedaje(e)}}/>
             </FormControl>
             <Ayuda titulo="Información de hospedaje" text="DIRECCIÓN  DE TU HOSPEDAJE EN CASO DE VISITAR A ALGÚN FAMILIAR O AMIGO O
                 SIMPLEMENTE AGREGUE “HOTEL, Y LA CIUDAD Y ESTADO QUE VISITARÁ”  " />
@@ -499,13 +528,21 @@ const Ayuda=(props)=>{
           <FormControl w="60%">
             <FormControl.Label>¿QUIEN CUBRIRÁ LOS GASTOS DE SU VIAJE?</FormControl.Label>
             <FormControl.Label> NOMBRE COMPLETO: </FormControl.Label>
-            <Input />
-            <FormControl.Label>TELEFONO: </FormControl.Label>
-            <Input />
+            <Input             placeholder="Nombre"
+            value={gastosViaje.nombre}
+            onChangeText={(value) => handleGastosChange('nombre', value)}/>
+            <FormControl.Label>TELÉFONO: </FormControl.Label>
+            <Input            placeholder="Teléfono"
+            value={gastosViaje.tel}
+            onChangeText={(value) => handleGastosChange('tel', value)} />
             <FormControl.Label>DIRECCIÓN: </FormControl.Label>
-            <Input />
+            <Input             placeholder="Dirección"
+            value={gastosViaje.direccion}
+            onChangeText={(value) => handleGastosChange('direccion', value)}/>
             <FormControl.Label>E-MAIL: </FormControl.Label>
-            <Input />
+            <Input             placeholder="E-mail"
+            value={gastosViaje.email}
+            onChangeText={(value) => handleGastosChange('email', value)}/>
           </FormControl>
           <Ayuda titulo="Gastos de viaje" text="Recuerde que únicamente de padres a hijos y de hijos a padres se pueden cubrir los
             gastos de viaje o entre esposos. No abuelos o novios o tios."/>
@@ -527,10 +564,10 @@ const Ayuda=(props)=>{
               {!viajaSolo ? (
               <>
               <FormControl.Label>NOMBRES COMPLETOS: </FormControl.Label>
-                <Input placeholder="NOMBRES DE ACOMPAÑANTES:" 
+                <Input placeholder="NOMBRES DE ACOMPAÑANTES" 
           
-                value={otraNacionalidad}
-                onChangeText={(e)=>{setOtraNacionalidad(e)}} />
+                value={acompanantes}
+                onChangeText={(e)=>{setAcompanantes(e)}} />
                 </>
               ) : null}
             </FormControl>
@@ -540,7 +577,10 @@ const Ayuda=(props)=>{
           <Stack direction={"row"} my={3} > 
             <FormControl w="60%">
               <FormControl.Label>FECHA DE SU ULTIMA ENTRADA A USA? DD/MM/AAAA </FormControl.Label>
-              <Input />
+              <Input  placeholder="FECHA DE SU ULTIMA ENTRADA A USA? DD/MM/AAAA" 
+          
+          value={ultimaEntrada}
+          onChangeText={(e)=>{setUltimaEntrada(e)}} />
             </FormControl>
             <Ayuda tittulo="Ultima entrada a USA" text="En caso de no recordarlo, agregue una
                 fecha tentativa o busque en los sellos de entrada en sus pasaportes." />
@@ -548,7 +588,10 @@ const Ayuda=(props)=>{
 
           <FormControl  w="60%">
             <FormControl.Label>¿Y por cuantos días ingresó?</FormControl.Label>
-            <Input />
+            <Input  placeholder="Dias que ingresó" 
+          
+          value={diasUltima}
+          onChangeText={(e)=>{setDiasUltima(e)}} />
           </FormControl>
 
           <FormControl>
@@ -856,8 +899,22 @@ const Ayuda=(props)=>{
           <BotonVolver/>
          </>
       ) : null}
+
+
+
       
     </ScrollView>
+
+    {state === 10 ? (
+      
+      <PDFViewer height={1200} width={"90%"} style={{alignSelf:"center"}}>
+              <MyDocument />
+      </PDFViewer>
+    
+    
+  ) : null }
+
+
     </NativeBaseProvider>
   );
 }
@@ -865,4 +922,3 @@ const Ayuda=(props)=>{
 
 
 export default App;
-
