@@ -4,11 +4,10 @@ import {  ScrollView, FormControl, Input,
 import React, {useEffect, useState} from "react";
 import Titulo from "./components/titulo";
 import { PDFViewer, Page, Image as ImagePDF,Text as TextPDF, View as ViewPDF, Document, StyleSheet } from '@react-pdf/renderer';
-
-
+import funEstadoCivil from "./components/funEstadoCivil";
 function App() {
   const [state, setState] = useState(10);
-  // nueva true, renovacion false
+  // nueva true, renovacion fals
   const [ nueva, setNueva] = useState(true);
 
   //variables
@@ -26,24 +25,27 @@ function App() {
    const [ sexo, setSexo] = useState(Boolean);
 
    //0=soltero, 1=casado, 2=divorciado, 3=viudo, 4=union libre
-   const [ estadoCivil, setEstadoCivil] = useState(0);
+   const [ estadoCivil, setEstadoCivil] = useState(3);
    
    const [ nacionalidad, setNacionalidad] = useState("");
    const [ otraNacion, setOtraNacion] = useState(Boolean);
-   const [ otraNacionalidad, setOtraNacionalidad] = useState("");
-   const [ pareja, setPareja ] = useState({nombre: "", fNacimiento:"", lugarNac:"", inicioM:"" , finM:""})
+   const [ otraNacionalidad, setOtraNacionalidad] = useState("Argentino");
+   const [ pareja, setPareja ] = useState({nombre: "", fNacimiento:"", lugarNac:"", inicioM:"" , finM:"", lugarDef:""})
+   const [ comparteCasa, setComparteCasa ] = useState(true);
    const [ fechaViaje, setFechaViaje ] = useState ("");
    const [ direccionHospedaje, setDireccionHospedaje ] = useState("");
    const [ gastosViaje, setGastosViaje ] = useState({nombre:"", tel:"", direccion:"", email:""});
    const [ ultimaEntrada, setUltimaEntrada ] =useState("");
    const [ diasUltima, setDiasUltima ] = useState("");
-   const [ direccion, setDireccion ] = useState({calle:"", numero:"", colonia:"", })
-   const [ viajaSolo, setViajaSolo ] = useState(Boolean);
+   const [ direccion, setDireccion ] = useState({calle:"", numero:"", colonia:"", cp:"", estado:"" , ciudad:""})
+   const [ viajaSolo, setViajaSolo ] = useState(false);
    const [ acompanantes, setAcompanantes ] = useState("");
    const [ visaAnterior, setVisaAnterior ] = useState(Boolean);
+   const [ visaNegada, setVisaNegada ] = useState(true)
+   const [ contacto, setContacto ] = useState({casa:"", celular:"", trabajo:"", email:"", redes:true, fb:"", instagram:""})
    const [ tieneParientes, setTieneParientes ] = useState(Boolean);
    const [ esEstudiante, setEsEstudiante ] = useState(Boolean);
-
+   const [ padres, setPadres ] = useState({padre:"", fnPadre:"", madre:"", fnMadre:""})
 
 
    //IMAGENES
@@ -170,6 +172,17 @@ const handleParejaChange = (name, value) => {
 const handleGastosChange = (name, value) => {
   setGastosViaje({ ...gastosViaje, [name]: value });
 };
+const handleDireccionChange = (name, value) => {
+  setDireccion({ ...direccion, [name]: value });
+};
+
+const handleContactoChange = (name, value) => {
+  setContacto({ ...contacto, [name]: value });
+};
+
+const handlePadresChange = (name, value) => {
+  setPadres({ ...padres, [name]: value });
+};
 
 //PDF INICIA
 
@@ -183,14 +196,25 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     flexGrow: 1,
-    marginTop: 20,
+    marginTop: 10,
+   
     
+  },
+  sec:{
+    padding:10,
+    borderWidth:1,
+    borderRadius:10,
+    marginTop:10,
+    marginHorizontal:15,
+    shadow:10
   },
   mid:{
     width: "50%"
   },
   row:{
-    flexDirection:"row"
+    flexDirection:"row", 
+    justifyContent:"space-between" ,
+    paddingRight:10
   },
   image: {
     width: 50,
@@ -198,35 +222,162 @@ const styles = StyleSheet.create({
   },
 });
 
+
+//switch Datos pareja
+
+
+
+
 // Create Document Component
 const MyDocument = () => (
   <Document>
     <Page size="A4" style={styles.page}>
-      <ViewPDF style={{margin:10, padding:10, alignSelf:"center", flexDirection:"row"}}>
+      <ViewPDF style={{marginTop:10, paddingTop:10, alignSelf:"center"}}>
 
         <TextPDF > Formulário para tramitar VISA americana</TextPDF>
       </ViewPDF>
 
       <ViewPDF style={styles.section}>
-        <TextPDF> Nombre: {nombre + " " + paterno + " " + materno} </TextPDF>
 
-        <ViewPDF style={{flexDirection:"row", justifyContent:"space-beetwen", marginTop:10}}>
-          <TextPDF style={styles.mid}> Whatsapp: 443564356{wa} </TextPDF>
-          <TextPDF>Teléfono fijo: {telefono1} </TextPDF>
+        {/* datos generales */}
+        <ViewPDF style={styles.sec}>
+          <TextPDF> Nombre: {nombre + " " + paterno + " " + materno} </TextPDF>
+
+          <ViewPDF style={{flexDirection:"row", justifyContent:"space-beetwen", marginTop:10}}>
+            <TextPDF style={styles.mid}> Whatsapp: 443564356{wa} </TextPDF>
+            <TextPDF>Teléfono fijo: {telefono1} </TextPDF>
+          </ViewPDF>
+          
+          <TextPDF> Correo electrónico personal: {correo1}</TextPDF>
+          <TextPDF> Sexo: {sexo ? "Masculino" : "Femenino"} </TextPDF>
+          <TextPDF> Nacionalidad: {nacionalidad }</TextPDF>
+          <ViewPDF style={{flexDirection:"row", justifyContent:"space-beetwen", marginTop:10}}>
+            <TextPDF style={styles.mid}> ¿Tiene otra nacionalidad? {otraNacion ? "Sí" : "No"} </TextPDF>
+          {
+            otraNacion ? 
+            <TextPDF> 2da nacionalidad: {otraNacionalidad}</TextPDF> :
+            null
+          }
+          </ViewPDF>
+          <TextPDF>Estado civil: {funEstadoCivil(estadoCivil)} </TextPDF>
         </ViewPDF>
+        {/* DATOS DE PAREJA */}
+        <ViewPDF style={styles.sec}>
+          {estadoCivil>0 ? 
+          <>
         
-        <TextPDF> Correo electrónico personal: {correo1}</TextPDF>
-        <TextPDF> Sexo: {sexo ? "Masculino" : "Femenino"} </TextPDF>
-        <TextPDF> Nacionalidad: {nacionalidad}</TextPDF>
-        <ViewPDF style={{flexDirection:"row", justifyContent:"space-beetwen", marginTop:10}}>
-          <TextPDF style={styles.mid}> ¿Tiene otra nacionalidad? {wa} </TextPDF>
-          <TextPDF>Teléfono fijo: {telefono1} </TextPDF>
+          <TextPDF style={{marginTop:6}}>DATOS DE LA PAREJA:</TextPDF>
+          <TextPDF>
+            Nombre: {pareja.nombre}
+          </TextPDF>
+          <TextPDF>
+            Fecha de nacimiento: {pareja.fNacimiento}
+          </TextPDF>
+          <TextPDF>
+            Lugar de nacimiento: {pareja.lugarNac}
+          </TextPDF>
+          </>
+          : null}
+
+          { estadoCivil === 1 ? (
+              <TextPDF>¿Viven juntos?: {comparteCasa ? "Si" : "No"}</TextPDF>
+          ) : null}
+
+          { estadoCivil === 2 ? (
+              <>
+              <TextPDF>Fecha de inicio legal del matrimonio: {pareja.inicioM}</TextPDF>
+              <TextPDF>Fecha de termino legal del matrimonio: {pareja.finM} </TextPDF>
+              </>
+          ) : null}
+
+          { estadoCivil === 3 ? (
+              <>
+              <TextPDF>Fecha de defunción: {pareja.finM} </TextPDF>
+              <TextPDF>Lugar de defunción: {pareja.lugarDef} </TextPDF>
+              </>
+          ) : null}
         </ViewPDF>
 
-        <TextPDF> </TextPDF>
+
+        {/* FECHA de viaje, hospedaje */}
+         <ViewPDF style={styles.sec}>
+          <TextPDF>Fecha tentativa de viaje: {fechaViaje} </TextPDF>
+          <TextPDF> Dirección de hospedaje: {direccionHospedaje}</TextPDF>
+          <TextPDF>¿Quién cubrira los gastos de hospedaje? </TextPDF>
+          <TextPDF> Nombre: {gastosViaje.nombre}</TextPDF>
+          <TextPDF> Teléfono: { gastosViaje.tel}</TextPDF>
+          <TextPDF> Dirección: {gastosViaje.direccion}</TextPDF>
+          <TextPDF> E-mail: {gastosViaje.email}</TextPDF>
+          <TextPDF> ¿Viaja solo? {viajaSolo ? "Si" : "No"}</TextPDF>
+            { !viajaSolo ? (
+              <TextPDF> Nombres de los acompañantes: {acompanantes}</TextPDF>
+            ) : null}
+
+            <TextPDF>Fecha de su ultima entrada a USA?: {ultimaEntrada} </TextPDF>
+            <TextPDF>¿Por cuántos días ingresó?: {diasUltima}</TextPDF>
+            <TextPDF >¿Ha tenido VISA antes? {visaAnterior ? "Si" : "No"}</TextPDF>
+            <TextPDF>¿Le han negado la VISA antes? {visaNegada ? "Si" : "No"} </TextPDF>
+         </ViewPDF>
+
+
+        {/* DIRECCIón personal */}
+         <ViewPDF style={styles.sec}>
+          <TextPDF>DIRECCIÓN PERSONAL</TextPDF>
+         <ViewPDF style={styles.row}>
+              <TextPDF>Calle: {direccion.calle} </TextPDF>
+              <TextPDF>Número: {direccion.numero} </TextPDF>
+            </ViewPDF>
+
+            <ViewPDF style={styles.row}>
+              <TextPDF>Colonia: {direccion.colonia} </TextPDF>
+              <TextPDF>Código postal: {direccion.cp} </TextPDF>
+            </ViewPDF>
+
+            <ViewPDF style={styles.row}>
+              <TextPDF>Estado: {direccion.estado}</TextPDF>
+              <TextPDF>Ciudad: {direccion.ciudad} </TextPDF>
+            </ViewPDF>
+
+         </ViewPDF>
  
+   
       </ViewPDF>
 
+    </Page>
+    
+ {/* SEGUNDA PAGINA */}
+    
+    <Page size="A4" style={styles.page}>
+      <ViewPDF style={styles.section}>
+        <ViewPDF style={styles.sec}>
+          <TextPDF style>TELÉFONOS DE CONTACTO</TextPDF>
+          <TextPDF>Casa: {contacto.casa}</TextPDF>
+          <TextPDF>Celular: {contacto.celular} </TextPDF>
+          <TextPDF>Trabajo: {contacto.trabajo} </TextPDF>
+          <TextPDF>E-mail: {contacto.email} </TextPDF>
+        </ViewPDF>
+        { contacto.redes === true ? (
+        <ViewPDF style={styles.sec}>
+        <TextPDF>REDES SOCIALES</TextPDF>
+          <TextPDF>Facebook: {contacto.fb} </TextPDF>
+          <TextPDF>Instagram: {contacto.instagram}</TextPDF>
+        </ViewPDF>
+        ) : null }
+
+        <ViewPDF style={styles.sec}>
+          <TextPDF>Información de los padres</TextPDF>
+          <TextPDF> Nombre del padre: {padres.padre}</TextPDF>
+          <TextPDF> Fecha de nacimiento del padre: {padres.fnPadre}</TextPDF>
+          <TextPDF> Nombre de la madre: {padres.madre}</TextPDF>
+          <TextPDF> Fecha de nacimiento del padre: {padres.fnMadre}</TextPDF>
+        </ViewPDF>
+
+        <ViewPDF style={styles.sec}>
+          <TextPDF> ¿Tiene algún pariente directo como hijos o hermanos viviendo en USA? {tieneParientes ? "Sí" : "No"}</TextPDF>
+        </ViewPDF>
+
+
+      </ViewPDF>
     </Page>
   </Document>
 );
@@ -420,12 +571,12 @@ const MyDocument = () => (
             <FormControl.Label>¿Tiene otra nacionalidad a parte de la arriba mencionada?</FormControl.Label>
               <Checkbox  isChecked={otraNacion} value={otraNacion}
               onChange={() => handleNacionChange(true)} my={2}>
-                    SI
+                    Si
               </Checkbox>
 
               <Checkbox  isChecked={!otraNacion}  value={!otraNacion}
               onChange={() => handleNacionChange(false)}my={2}>
-                    NO
+                    No
             </Checkbox>
             {otraNacion ? (
             <>
@@ -486,6 +637,21 @@ const MyDocument = () => (
             <Input             placeholder="Lugar de nacimiento"
             value={pareja.lugarNac}
             onChangeText={(value) => handleParejaChange('lugarNac', value)}/>
+            
+            { estadoCivil === 1 ? (
+              <>
+              <FormControl.Label>¿Viven en el mismo domicilio?</FormControl.Label>
+              <Checkbox  isChecked={comparteCasa} value={comparteCasa}
+              onChange={() => setComparteCasa(true)} my={2}>
+                    Si
+              </Checkbox>
+
+              <Checkbox  isChecked={!comparteCasa}  value={!comparteCasa}
+              onChange={() => setComparteCasa(false)}my={2}>
+                    No
+            </Checkbox>
+              </>
+            ) : null}
 
 
             { estadoCivil ===2 ? (
@@ -494,16 +660,25 @@ const MyDocument = () => (
                 <Input  placeholder="Fecha de inicio legal del matrimonio"
                  value={pareja.inicioM}
                  onChangeText={(value) => handleParejaChange('inicioM', value)} />
-                <FormControl.Label>Fecha de inicio legal del matrimonio:</FormControl.Label>
-                <Input  placeholder="Fecha de inicio legal del matrimonio"
+                <FormControl.Label>Fecha de termino legal del matrimonio:</FormControl.Label>
+                <Input  placeholder="Fecha de termino legal del matrimonio"
                  value={pareja.finM}
                  onChangeText={(value) => handleParejaChange('finM', value)} />
               </>
             ) : null}
-            
 
-
-
+            { estadoCivil === 3 ? (
+              <>
+              <FormControl.Label>Fecha de defunción: </FormControl.Label>
+              <Input placeholder="Fecha de defunción" value={pareja.finM}  
+              onChangeText={(value) => handleParejaChange('finM', value)}/>
+              <FormControl.Label>Lugar de defunción: </FormControl.Label>
+              <Input placeholder="Fecha de defunción" value={pareja.lugarDef} 
+              onChangeText={(value) => handleParejaChange('lugarDef', value)}/>
+              
+              </>
+            ) : null}
+          
         </FormControl>
 
        <>
@@ -523,15 +698,7 @@ const MyDocument = () => (
      </Stack>
           ) : null}
 
-
-
-
-
-
-      
           <FooterBotons/>
-
-
           </Stack>
       ) : null}
 
@@ -551,7 +718,7 @@ const MyDocument = () => (
 
           <Stack direction={"row"} mt={3}>
             <FormControl w="60%">
-              <FormControl.Label>Direccion donde se hospedará en USA:  </FormControl.Label>
+              <FormControl.Label>Dirección donde se hospedará en USA:  </FormControl.Label>
               <Input placeholder="Dirección de hospedaje" 
                      
                      value={direccionHospedaje}
@@ -564,19 +731,19 @@ const MyDocument = () => (
           <Stack direction={"row"} my={3}>
           <FormControl w="60%">
             <FormControl.Label>¿Quién cubrirá los gastos de su viaje?</FormControl.Label>
-            <FormControl.Label> NOMBRE COMPLETO: </FormControl.Label>
+            <FormControl.Label> Nombre completo: </FormControl.Label>
             <Input             placeholder="Nombre"
             value={gastosViaje.nombre}
             onChangeText={(value) => handleGastosChange('nombre', value)}/>
-            <FormControl.Label>TELÉFONO: </FormControl.Label>
+            <FormControl.Label>Teléfono: </FormControl.Label>
             <Input            placeholder="Teléfono"
             value={gastosViaje.tel}
             onChangeText={(value) => handleGastosChange('tel', value)} />
-            <FormControl.Label>DIRECCIÓN: </FormControl.Label>
+            <FormControl.Label>Dirección: </FormControl.Label>
             <Input             placeholder="Dirección"
             value={gastosViaje.direccion}
             onChangeText={(value) => handleGastosChange('direccion', value)}/>
-            <FormControl.Label>E-MAIL: </FormControl.Label>
+            <FormControl.Label>E-mail: </FormControl.Label>
             <Input             placeholder="E-mail"
             value={gastosViaje.email}
             onChangeText={(value) => handleGastosChange('email', value)}/>
@@ -588,33 +755,33 @@ const MyDocument = () => (
 
           <Stack direction={"row"} >
             <FormControl w="60%">
-              <FormControl.Label>¿USTED VIAJARÁ SÓLO?   </FormControl.Label>
+              <FormControl.Label>¿Usted viajara solo?   </FormControl.Label>
                 <Checkbox  isChecked={viajaSolo} value={otraNacion}
                 onChange={() => setViajaSolo(true)} my={2}>
-                      SI
+                      Si
                 </Checkbox>
 
                 <Checkbox  isChecked={!viajaSolo}  value={!otraNacion}
                 onChange={() => setViajaSolo(false)}my={2}>
-                      NO
+                      No
               </Checkbox>
               {!viajaSolo ? (
               <>
-              <FormControl.Label>NOMBRES COMPLETOS: </FormControl.Label>
-                <Input placeholder="NOMBRES DE ACOMPAÑANTES" 
+              <FormControl.Label>Nombres completos : </FormControl.Label>
+                <Input placeholder="Nombres completos de los acompañantes" 
           
                 value={acompanantes}
                 onChangeText={(e)=>{setAcompanantes(e)}} />
                 </>
               ) : null}
             </FormControl>
-            <Ayuda titulo="Acompañantes" text="EN CASO DE ALGUIEN VIAJE CON USTED , FAVOR DE AGREGAR , NOMBRES COMPLETOS."/>
+            <Ayuda titulo="Acompañantes" text="En caso de alguien viaje con usted , favor de agregar , nombres completos."/>
           </Stack> 
 
           <Stack direction={"row"} my={3} > 
             <FormControl w="60%">
-              <FormControl.Label>FECHA DE SU ULTIMA ENTRADA A USA? DD/MM/AAAA </FormControl.Label>
-              <Input  placeholder="FECHA DE SU ULTIMA ENTRADA A USA? DD/MM/AAAA" 
+              <FormControl.Label>Fecha de su ultima entrada a USA? DD/MM/AAAA </FormControl.Label>
+              <Input  placeholder="Fecha de su ultima entrada a USA? DD/MM/AAAA" 
           
           value={ultimaEntrada}
           onChangeText={(e)=>{setUltimaEntrada(e)}} />
@@ -632,8 +799,7 @@ const MyDocument = () => (
           </FormControl>
 
           <FormControl>
-            <FormControl.Label>¿USTED HA TENIDO VISA ANTERIORMENTE? </FormControl.Label>
-            
+            <FormControl.Label>¿Usted ha tenido VISA anteriormente? </FormControl.Label>
               <Checkbox isChecked={visaAnterior} value={visaAnterior} my={2}
               onChange={()=>setVisaAnterior(true)}>
                 Si
@@ -642,11 +808,19 @@ const MyDocument = () => (
               onChange={()=>setVisaAnterior(false)}>
                 No
               </Checkbox>
-
-            
-
           </FormControl>
 
+          <FormControl>
+            <FormControl.Label>¿Le han negado la  VISA anteriormente? </FormControl.Label>
+              <Checkbox isChecked={visaNegada} value={visaNegada} my={2}
+              onChange={()=>setVisaNegada(true)}>
+                Si
+              </Checkbox>
+              <Checkbox isChecked={!visaNegada} value={!visaNegada} my={2}
+              onChange={()=>setVisaNegada(false)}>
+                No
+              </Checkbox>
+          </FormControl>
           
           <FooterBotons/>
 
@@ -657,35 +831,47 @@ const MyDocument = () => (
       { state === 5 ? (
         <View mx={"10%"}>
             <FormControl>
-                <FormControl.Label>INGRESA TU DIRECCIÓN COMPLETA</FormControl.Label>
+                <FormControl.Label>Ingresa tu dirección completa</FormControl.Label>
                
               </FormControl>
               <FormControl>
-                <FormControl.Label>CALLE: </FormControl.Label>
-                <Input />
+                <FormControl.Label>Calle: </FormControl.Label>
+                <Input             placeholder="Calle"
+                  value={direccion.calle}
+                   onChangeText={(value) => handleDireccionChange('calle', value)}/>
               </FormControl>
 
               <FormControl>
-                <FormControl.Label>NÚMERO: </FormControl.Label>
-                <Input />
+                <FormControl.Label>Número: </FormControl.Label>
+                <Input             placeholder="Número"
+                  value={direccion.numero}
+                   onChangeText={(value) => handleDireccionChange('numero', value)}/>
               </FormControl>
 
               <FormControl>
-                <FormControl.Label>COLONIA: </FormControl.Label>
-                <Input />
+                <FormControl.Label>Colonia: </FormControl.Label>
+                <Input             placeholder="Colonia"
+                  value={direccion.colonia}
+                   onChangeText={(value) => handleDireccionChange('colonia', value)}/>
               </FormControl>
               <FormControl>
-                <FormControl.Label>CÓDIGO POSTAL: </FormControl.Label>
-                <Input />
+                <FormControl.Label>Código postal: </FormControl.Label>
+                <Input             placeholder="Código postal"
+                  value={direccion.cp}
+                   onChangeText={(value) => handleDireccionChange('cp', value)}/>
               </FormControl>
               <FormControl>
-                <FormControl.Label>ESTADO: </FormControl.Label>
-                <Input />
+                <FormControl.Label>Estado: </FormControl.Label>
+                <Input             placeholder="Estado"
+                  value={direccion.estado}
+                   onChangeText={(value) => handleDireccionChange('estado', value)}/> 
               </FormControl>
 
               <FormControl>
-                <FormControl.Label>CIUDAD: </FormControl.Label>
-                <Input />
+                <FormControl.Label>Ciudad: </FormControl.Label>
+                <Input             placeholder="Ciudad"
+                  value={direccion.ciudad}
+                   onChangeText={(value) => handleDireccionChange('ciudad', value)}/>
               </FormControl>
 
               <Divider/>
@@ -700,27 +886,35 @@ const MyDocument = () => (
             <FormControl>
               <FormControl.Label>TELEFONOS DE CASA, CELULAR Y TRABAJO</FormControl.Label>
               <Text>CASA:</Text>
-              <Input />
+              <Input  placeholder="Teléfono fijo"
+                  value={contacto.casa}
+                   onChangeText={(value) => handleContactoChange('casa', value)}/>
               <Text>CELULAR:</Text>
-              <Input />
+              <Input  placeholder="Teléfono móvil"
+                  value={contacto.celular}
+                   onChangeText={(value) => handleContactoChange('celular', value)}/>
               <Text>TRABAJO:</Text>
-              <Input />
+              <Input   placeholder="Teléfono laboral"
+                  value={contacto.trabajo}
+                   onChangeText={(value) => handleContactoChange('trabajo', value)}/>
             </FormControl>
 
             <FormControl>
               <FormControl.Label>CORREO ELECTRÓNICO:</FormControl.Label>
-              <Input />
+              <Input   placeholder="Correo electrónico"
+                  value={contacto.email}
+                   onChangeText={(value) => handleContactoChange('email', value)}/>
             </FormControl>
 
             <FormControl w="60%">
               <FormControl.Label>¿TIENES REDES SOCIALES? </FormControl.Label>
-                <Checkbox  isChecked={viajaSolo} value={viajaSolo}
-                onChange={() => setViajaSolo(true)} my={2}>
+                <Checkbox  isChecked={contacto.redes} value={contacto.redes}
+                onChange={() => setContacto.redes(true)} my={2}>
                       SI
                 </Checkbox>
 
-                <Checkbox  isChecked={!viajaSolo}  value={!viajaSolo}
-                onChange={() => setViajaSolo(false)}my={2}>
+                <Checkbox  isChecked={!contacto.redes} value={!contacto.redes}
+                onChange={() => setContacto.redes(false)} my={2}>
                       NO
               </Checkbox>
               {viajaSolo ? (
@@ -747,35 +941,34 @@ const MyDocument = () => (
 
       { state === 7 ? (
       <Stack mx={"10%"}>
-        <FormControl bg={"#"} >
-          <FormControl.Label >DOMICILIO DONDE SE HOSPEDARÁ EN USA:</FormControl.Label>
-          <Input />
-        </FormControl>
-        <Divider mt={2}/>
+        <Titulo texto="Información sobre sus padres"/>
 
         <FormControl bg={"#"} my={2}>
-          <FormControl.Label my={2}>NOMBRE DE SUS PADRES COMPLETO Y FECHAS DE NACIMIENTO:</FormControl.Label>
-          <Input />
+          <FormControl.Label my={2}>Nombre de su padre: </FormControl.Label>
+          <Input placeholder="Nombre de su padre: "
+                  value={padres.padre}
+                   onChangeText={(value) => handlePadresChange('padre', value)}/>
         </FormControl>
 
         <FormControl bg={"#"} my={2}>
-          <FormControl.Label my={2}>NOMBRE DE SU PADRE:</FormControl.Label>
-          <Input />
+          <FormControl.Label my={2}>Fecha de nacimiento de su padre:</FormControl.Label>
+          <Input placeholder="Fecha de nacimiento de su padre:"
+                  value={padres.fnPadre}
+                   onChangeText={(value) => handlePadresChange('fnPadre', value)}/>
         </FormControl>
 
         <FormControl bg={"#"} my={2}>
-          <FormControl.Label my={2}>FECHA DE NACIMIENTO DE SU PADRE:</FormControl.Label>
-          <Input />
+          <FormControl.Label my={2}>Nombre de su madre: </FormControl.Label>
+          <Input placeholder="Nombre de su madre: "
+                  value={padres.madre}
+                   onChangeText={(value) => handlePadresChange('madre', value)}/>
         </FormControl>
 
         <FormControl bg={"#"} my={2}>
-          <FormControl.Label my={2}>NOMBRE DE SU MADRE:</FormControl.Label>
-          <Input />
-        </FormControl>
-
-        <FormControl bg={"#"} my={2}>
-          <FormControl.Label my={2}>FECHA DE NACIMIENTO DE SU MADRE:</FormControl.Label>
-          <Input />
+          <FormControl.Label my={2}>Fecha de nacimiento de su madre:</FormControl.Label>
+          <Input placeholder="Fecha de nacimiento de su madre:"
+                  value={padres.fnMadre}
+                   onChangeText={(value) => handlePadresChange('fnMadre', value)}/>
         </FormControl>
 
 
@@ -787,15 +980,15 @@ const MyDocument = () => (
  
 
         <FormControl >
-              <FormControl.Label>¿TIENE ALGUN PARIENTE DIRECTO COMO HIJOS O HERMANOS VIVIENDO EN USA? </FormControl.Label>
+              <FormControl.Label>¿Tiene algún pariente directo como hijos o hermanos viviendo en USA? </FormControl.Label>
                 <Checkbox  isChecked={tieneParientes} value={tieneParientes}
                 onChange={() => setTieneParientes(true)} my={2}>
-                      SI
+                      Sí
                 </Checkbox>
 
                 <Checkbox  isChecked={!tieneParientes}  value={!tieneParientes}
                 onChange={() => setTieneParientes(false)}my={2}>
-                      NO
+                      No
               </Checkbox>
               {tieneParientes ? (
               <>
