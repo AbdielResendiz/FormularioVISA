@@ -1,0 +1,12 @@
+{
+  "files": {
+    "main.js": "/formulario/static/js/main.cdbd6fc3.js",
+    "static/js/787.7ccf4376.chunk.js": "/formulario/static/js/787.7ccf4376.chunk.js",
+    "index.html": "/formulario/index.html",
+    "main.cdbd6fc3.js.map": "/formulario/static/js/main.cdbd6fc3.js.map",
+    "787.7ccf4376.chunk.js.map": "/formulario/static/js/787.7ccf4376.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.cdbd6fc3.js"
+  ]
+}

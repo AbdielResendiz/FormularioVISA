@@ -19,15 +19,14 @@ function App() {
   const m = fechaPDF.getMonth();
   const y = fechaPDF.getFullYear();
   //1.
-   const [ nombre, setNombre] = useState("nom");
-   const [ paterno, setPaterno] = useState("pat");
-   const [ materno,setMaterno] = useState(" mat");
+   const [ nombre, setNombre] = useState("");
+   const [ paterno, setPaterno] = useState("");
+   const [ materno,setMaterno] = useState("");
   // //2-5
    const [ sexo, setSexo] = useState(true);
 
    //0=soltero, 1=casado, 2=divorciado, 3=viudo, 4=union libre
-   const [ estadoCivil, setEstadoCivil] = useState(3);
-   
+   const [ estadoCivil, setEstadoCivil] = useState(0);
    const [ nacionalidad, setNacionalidad] = useState("");
    const [ otraNacion, setOtraNacion] = useState(false);
    const [ otraNacionalidad, setOtraNacionalidad] = useState("");
@@ -35,7 +34,7 @@ function App() {
    const [ comparteCasa, setComparteCasa ] = useState(true);
    const [ fechaViaje, setFechaViaje ] = useState ("");
    const [ direccionHospedaje, setDireccionHospedaje ] = useState("");
-   const [ gastosViaje, setGastosViaje ] = useState({nombre:"", tel:"", direccion:"", email:""});
+   const [ gastosViaje, setGastosViaje ] = useState({nombre:"", tel:"", direccion:"", email:"", pagaSolo: true});
    const [ ultimaEntrada, setUltimaEntrada ] =useState("");
    const [ diasUltima, setDiasUltima ] = useState("");
    const [ direccion, setDireccion ] = useState({calle:"", numero:"", colonia:"", cp:"", estado:"" , ciudad:""})
@@ -43,12 +42,14 @@ function App() {
    const [ acompanantes, setAcompanantes ] = useState("");
    const [ visaAnterior, setVisaAnterior ] = useState(Boolean);
    const [ visaNegada, setVisaNegada ] = useState(true)
+   const [ fechaVisaNegada, setFechaVisaNegada ] = useState("")
    const [ contacto, setContacto ] = useState({casa:"", celular:"", trabajo:"", email:"", redes:true, fb:"", instagram:""})
    const [ tieneParientes, setTieneParientes ] = useState(true);
    const [ pariente, setPariente ] = useState( {nombre : "", parentesco : "", estatus: ""} );
    const [ esEstudiante, setEsEstudiante ] = useState(true);
    const [ padres, setPadres ] = useState({padre:"", fnPadre:"", madre:"", fnMadre:""})
    const [ trabajo, setTrabajo ] = useState ( { empresa: "", direccion: "", telefono: "", sueldo: "", cargo: "", anterior:""} );
+   const [ trabajoAnterior, setTrabajoAnterior ] = useState ( { empresa: "", direccion: "", fechaIngreso: "", fechaSalida: "", cargo: "", exJefe:""} );
    const [ escuela, setEscuela ] = useState( { nombre: "", direccion: "", fecha:"", grado:""} )
    const [ infoAdicional, setInfoAdicional ] = useState ( { paises: "", idiomas: "", problema: false, explicaP:"", deportado:false, explicaD:"" } );
    //IMAGENES
@@ -61,13 +62,11 @@ function App() {
     const newPassUrls = [];
     pasaporteIMG.forEach(image=> newPassUrls.push(URL.createObjectURL(image)));
     setPasaporteURL(newPassUrls);
-   
   }, [pasaporteIMG]);
 
   useEffect(() => {
     console.log("pasaporteURL: ", pasaporteURL)
   }, [pasaporteURL])
-  
 
   function onPassChange(e) {
     setPasaporteIMG([...e.target.files])
@@ -123,12 +122,7 @@ console.log("paterno", paterno);
     </Button>
   )}
 
-  const BotonNext= ()=>{
-    return(
-    <Button mx={"15%"} onPress={()=>setState(state+1)}>
-      Continuar
-    </Button>
-  )}
+
 
   const FooterBotons=()=>{
     return(
@@ -198,6 +192,9 @@ const handleParienteChange = (name, value) => {
 const handleTrabajoChange = (name, value) => {
   setTrabajo({ ...trabajo, [name]: value });
 };
+const handleTrabajoAnteriorChange = (name, value) => {
+  setTrabajoAnterior({ ...trabajoAnterior, [name]: value });
+};
 const handleEscuelaChange = (name, value) => {
   setEscuela({ ...escuela, [name]: value });
 };
@@ -263,46 +260,99 @@ const handleStates = (opcion)=>{
       break;
 
     case 3:
-         // Verificar si algún campo está vacío
-         if (nacionalidad === '' || otraNacion === true || estadoCivil !== 0) {
-          // Mostrar alerta con los campos vacíos
+       switch (true) {
+        case (nacionalidad===""):
+          alert('El campo Nacionalidad está vacío.')
+          
+          break;
+        case (otraNacion && otraNacionalidad ===""):
+         
+            alert('El campo Otra Nacionalidad está vacío.')
+            
+            break;
+        case (estadoCivil===1 || estadoCivil===4):
           let camposVacios = [];
-          if (nacionalidad === '') camposVacios.push('Nacionalidad');
-          if (otraNacionalidad === '') camposVacios.push('2da Nacionalidad');
-          if (pareja.nombre === '') camposVacios.push('Datos de la pareja');
-          if (pareja.fNacimiento === '') camposVacios.push('Datos de la pareja');
-          if (pareja.lugarNac === '') camposVacios.push('Datos de la pareja');
-
-          alert(`Los siguientes campos están vacíos: ${camposVacios.join(', ')}`);
-        } else {
-          // Todos los campos están completos, puedes enviar el formulario o realizar cualquier otra acción aquí
-          // ...
+          if (pareja.nombre === '') camposVacios.push('Nombre de la pareja');
+          if (pareja.fNacimiento === '') camposVacios.push('Fecha de nacimiento de la pareja');
+          if (pareja.lugarNac === '') camposVacios.push('Lugar de nacimiento de la pareja');
+          if ( pareja.nombre==="" || pareja.fNacimiento==="" || pareja.lugarNac===""  ){
+            alert(`Los siguientes campos están vacíos: ${camposVacios.join(', ')}`);}
+            else{
+              setState(4);
+            }
+        break;
+        case (estadoCivil===2):
+          let camposVacios2 = [];
+          if (pareja.nombre === '') camposVacios2.push('Nombre de la pareja');
+          if (pareja.fNacimiento === '') camposVacios2.push('Fecha de nacimiento de la pareja');
+          if (pareja.lugarNac === '') camposVacios2.push('Lugar de nacimiento de la pareja');
+          if (pareja.inicioM === '') camposVacios2.push('Fecha de inicio de matrimonio');
+          if (pareja.finM === '') camposVacios2.push('Fecha de termino legal de matrimonio');
+          if ( pareja.nombre==="" || pareja.fNacimiento==="" || pareja.lugarNac==="" || pareja.inicioM ==="" || pareja.finM=== ""  ){
+            alert(`Los siguientes campos están vacíos: ${camposVacios2.join(', ')}`);}
+            else{
+              setState(4);
+            }
+        break;
+        case (estadoCivil===3):
+          let camposVacios3 = [];
+          if (pareja.nombre === '') camposVacios3.push('Nombre de la pareja');
+          if (pareja.fNacimiento === '') camposVacios3.push('Fecha de nacimiento de la pareja');
+          if (pareja.lugarNac === '') camposVacios3.push('Lugar de nacimiento de la pareja');
+          if (pareja.lugarDef === '') camposVacios3.push('Lugar de defunción');
+          if (pareja.finM === '') camposVacios3.push('Fecha de defunción');
+          if ( pareja.nombre==="" || pareja.fNacimiento==="" || pareja.lugarNac==="" || pareja.lugarDef ==="" || pareja.finM=== ""  ){
+            alert(`Los siguientes campos están vacíos: ${camposVacios3.join(', ')}`);}
+            else{
+              setState(4);
+            }
+        break;
+       
+        default:
           setState(4);
-        }
+          break;
+       }
       break;
 
     case 4:
-        // Verificar si algún campo está vacío
-        if (fechaViaje === '' || direccionHospedaje === true || gastosViaje.nombre === '' 
-        || gastosViaje.tel === '' || gastosViaje.direccion === '' || gastosViaje.email === '' ) {
-        // Mostrar alerta con los campos vacíos
-        let camposVacios = [];
-        if (fechaViaje === '') camposVacios.push('Fecha deViaje');
-        if (direccionHospedaje === '') camposVacios.push('Dirección de hospedaje');
-        if (gastosViaje.nombre === '') camposVacios.push('Nombre de quien cubrira sus gastos');
-        if (gastosViaje.tel === '') camposVacios.push('Teléfono de quien cubrira sus gastos');
-        if (gastosViaje.direccion === '') camposVacios.push('Dirección de quien cubrira sus gastos');
-        if (gastosViaje.email === '') camposVacios.push('Correo de quien cubrira sus gastos');
-        if ( viajaSolo){
-          if (acompanantes === '') camposVacios.push('Nombre su acompañante');
-        }
-       
-        alert(`Los siguientes campos están vacíos: ${camposVacios.join(', ')}`);
-      } else {
-        // Todos los campos están completos, puedes enviar el formulario o realizar cualquier otra acción aquí
-        // ...
-        setState(5);
-      }
+       switch (true) {
+        case (fechaViaje===""):
+          alert("El campo fecha de viaje está vacío.");
+          break;
+        case (direccionHospedaje===""):
+          alert("El campo dirección de hospedaje está vacío.");
+          break;
+
+          case (gastosViaje.pagaSolo===false):
+            let camposVacios3 = [];
+            if (gastosViaje.nombre === '') camposVacios3.push('Nombre de la pareja');
+            if (gastosViaje.tel === '') camposVacios3.push('Fecha de nacimiento de la pareja');
+            if (gastosViaje.direccion === '') camposVacios3.push('Lugar de nacimiento de la pareja');
+            if (gastosViaje.email === '') camposVacios3.push('Lugar de defunción');
+            if ( gastosViaje.nombre ==="" || gastosViaje.tel ==="" || gastosViaje.direccion==="" || gastosViaje.email ==="" ){
+              alert(`Los siguientes campos están vacíos: ${camposVacios3.join(', ')}`);}
+              else{
+                setState(5);
+              }
+          break;
+
+          case (viajaSolo && acompanantes === ""):
+           alert("El campo de Nombres completos de los acompañantes está vacío")
+          break;
+
+          case (ultimaEntrada === ""):
+            alert("El campo de Fecha de su última entrada está vacío")
+           break;
+
+          case (diasUltima === ""):
+          alert("El campo Días que ingresó está vacío")
+          break;
+
+        default:
+          alert("Default uwu");
+          break;
+       }
+
       break;
       
     case 5:
@@ -375,7 +425,10 @@ const handleStates = (opcion)=>{
       break;
 
     case 8:
-      if ( trabajo.empresa === '' || trabajo.direccion === '' || trabajo.telefono === '' || trabajo.sueldo === '' || trabajo.cargo === '' || trabajo.anterior === '' || (esEstudiante && escuela.nombre === '')   ) {
+      if ( trabajo.empresa === '' || trabajo.direccion === '' || trabajo.telefono === '' || trabajo.sueldo === '' || trabajo.cargo === '' ||  
+         (esEstudiante && escuela.nombre === '' ) || trabajoAnterior.empresa ==="" ||
+         trabajoAnterior.direccion ==="" || trabajoAnterior.fechaIngreso ==="" || trabajoAnterior.fechaSalida ==="" ||
+          trabajoAnterior.exJefe ==="" || trabajoAnterior.cargo ==="" ) {
         // Mostrar alerta con los campos vacíos
         let camposVacios = [];
         if (trabajo.empresa === '') camposVacios.push('Empresa');
@@ -383,12 +436,16 @@ const handleStates = (opcion)=>{
         if (trabajo.telefono === '') camposVacios.push('Teléfono de Trabajo');
         if (trabajo.sueldo === '') camposVacios.push('Sueldo');
         if (trabajo.cargo === '') camposVacios.push('Cargo');
-        if (trabajo.anterior === '') camposVacios.push('Trabajo Anterior');      
         if (esEstudiante && escuela.nombre === '') camposVacios.push('Nombre de la Escuela');
         if (esEstudiante && escuela.direccion === '') camposVacios.push('Dirección de la Escuela');
         if (esEstudiante && escuela.fecha === '') camposVacios.push('Fecha de la Escuela');
         if (esEstudiante && escuela.grado === '') camposVacios.push('Grado de la Escuela');
-        
+        if (trabajoAnterior.empresa === '') camposVacios.push('Nombre de empresa del trabajo anterior');
+        if (trabajoAnterior.direccion === '') camposVacios.push('Dirección de empresa del trabajo anterior');
+        if (trabajoAnterior.fechaIngreso === '') camposVacios.push('Fecha de ingreso del trabajo anterior');
+        if (trabajoAnterior.fechaSalida === '') camposVacios.push('Fecha de salida del trabajo anterior');
+        if (trabajoAnterior.cargo === '') camposVacios.push('Cargo del trabajo anterior');
+        if (trabajoAnterior.exJefe === '') camposVacios.push('Ex jefe del trabajo anterior');
 
         alert(`Los siguientes campos están vacíos: ${camposVacios.join(', ')}`);
       } else {
@@ -402,13 +459,13 @@ const handleStates = (opcion)=>{
       break;
 
     case 9:
-      if ( infoAdicional.paises === ''|| infoAdicional.idiomas === ''|| infoAdicional.problema === ''|| infoAdicional.deportado === ''   ) {
+      if ( infoAdicional.paises === ''|| infoAdicional.idiomas === ''|| infoAdicional.explicaP === ''|| infoAdicional.explicaD === ''   ) {
         // Mostrar alerta con los campos vacíos
         let camposVacios = [];
         if (infoAdicional.paises === '') camposVacios.push('Países');
         if (infoAdicional.idiomas === '') camposVacios.push('Idiomas');
-        if (infoAdicional.problema === '') camposVacios.push('Problema');
-        if (infoAdicional.deportado === '') camposVacios.push('Deportado');
+        if (infoAdicional.explicaP === '') camposVacios.push('Problema en su estancia');
+        if (infoAdicional.explicaD === '') camposVacios.push('Deportado');
         
 
         alert(`Los siguientes campos están vacíos: ${camposVacios.join(', ')}`);
@@ -1042,7 +1099,18 @@ const MyDocument = () => (
           <Stack direction={"row"} my={3}>
           <FormControl w="60%">
             <FormControl.Label>¿Quién cubrirá los gastos de su viaje?</FormControl.Label>
-            <FormControl.Label> Nombre completo: </FormControl.Label>
+            <Checkbox  isChecked={gastosViaje.pagaSolo} value={gastosViaje.pagaSolo}
+                onChange={() => handleGastosChange('pagaSolo', true)} my={2}>
+                      Yo mismo
+                </Checkbox>
+
+                <Checkbox   isChecked={!gastosViaje.pagaSolo} value={!gastosViaje.pagaSolo}
+                onChange={() => handleGastosChange('pagaSolo', false)} my={2}>
+                      Alguien cubrira mis gastos
+              </Checkbox>
+              { !gastosViaje.pagaSolo ? (
+                <>
+                  <FormControl.Label> Nombre completo: </FormControl.Label>
             <Input             placeholder="Nombre"
             value={gastosViaje.nombre}
             onChangeText={(value) => handleGastosChange('nombre', value)}/>
@@ -1058,6 +1126,9 @@ const MyDocument = () => (
             <Input             placeholder="E-mail"
             value={gastosViaje.email}
             onChangeText={(value) => handleGastosChange('email', value)}/>
+                </>
+              ) : null}
+          
           </FormControl>
           <Ayuda titulo="Gastos de viaje" text="Recuerde que únicamente de padres a hijos y de hijos a padres se pueden cubrir los
             gastos de viaje o entre esposos. No abuelos o novios o tios."/>
@@ -1131,6 +1202,15 @@ const MyDocument = () => (
               onChange={()=>setVisaNegada(false)}>
                 No
               </Checkbox>
+              {visaNegada ? (
+                          <FormControl>
+                <FormControl.Label>Fecha en que se negó la VISA:</FormControl.Label>
+                <Input  placeholder="Fecha en que se negó la VISA" 
+              
+              value={fechaVisaNegada}
+              onChangeText={(e)=>{setFechaVisaNegada(e)}} />
+              </FormControl>
+              ): null}
           </FormControl>
           
           <FooterBotons/>
@@ -1371,13 +1451,48 @@ const MyDocument = () => (
                   value={trabajo.cargo}
                    onChangeText={(value) => handleTrabajoChange('cargo', value)}/>
           </FormControl>
+          <Divider/>
+
 
           <FormControl bg={"#"}>
-            <FormControl.Label>Trabajo anterior:</FormControl.Label>
-            <Input placeholder="Trabajo anterior"
-                  value={trabajo.anterior}
-                   onChangeText={(value) => handleTrabajoChange('anterior', value)}/>
+            <FormControl.Label>Trabajo anterior</FormControl.Label>
+
+            <FormControl.Label>Nombre de la empresa:</FormControl.Label>
+            <Input placeholder="Nombre de la empresa"
+                  value={trabajoAnterior.empresa}
+                   onChangeText={(value) => handleTrabajoAnteriorChange('empresa', value)}/>
+
+            <FormControl.Label>Dirección de la empresa:</FormControl.Label>
+            <Input placeholder="Dirección de la empresa"
+                  value={trabajoAnterior.direccion}
+                   onChangeText={(value) => handleTrabajoAnteriorChange('direccion', value)}/>
+
+            <FormControl.Label>Fecha de ingreso a la empresa:</FormControl.Label>
+            <Input placeholder="Fecha de ingreso a la empresa"
+                  value={trabajoAnterior.fechaIngreso}
+                   onChangeText={(value) => handleTrabajoAnteriorChange('fechaIngreso', value)}/>
+
+            <FormControl.Label>Fecha de salida de la empresa:</FormControl.Label>
+            <Input placeholder="Fecha de salida de la empresa"
+                  value={trabajoAnterior.fechaSalida}
+                   onChangeText={(value) => handleTrabajoAnteriorChange('fechaSalida', value)}/>
+
+            <FormControl.Label>Nombre de su ex jefe directo:</FormControl.Label>
+            <Input placeholder="Nombre de su ex jefe directo"
+                  value={trabajoAnterior.exJefe}
+                   onChangeText={(value) => handleTrabajoAnteriorChange('exJefe', value)}/>
+
+            <FormControl.Label>Cargo:</FormControl.Label>
+            <Input placeholder="Cargo"
+                  value={trabajoAnterior.cargo}
+                   onChangeText={(value) => handleTrabajoAnteriorChange('cargo', value)}/>
+
+
           </FormControl>
+
+
+
+
 
           <FormControl >
               <FormControl.Label>¿Eres estudiante? </FormControl.Label>
@@ -1464,10 +1579,7 @@ const MyDocument = () => (
                   value={infoAdicional.explicaD}
                    onChangeText={(value) => handleInfoAdicionalChange('explicaD', value)}/>
           </FormControl>
-          <Button mx="15%" my={6} onPress={()=>setState(10)}>
-            Verificar información
-          </Button>
-          <BotonVolver/>
+          <FooterBotons/>
          </>
       ) : null}
       
